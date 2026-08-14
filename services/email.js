@@ -20,7 +20,7 @@ const baseLayout = (content) => `
   .wrap{max-width:560px;margin:0 auto;padding:32px 16px;}
   .card{background:#13161E;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:32px;}
   .logo{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:28px;display:flex;align-items:center;gap:8px;}
-  .logo-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#2D6AFF,#00C2CB);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;}
+  .logo-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#2D6AFF,#00C2CB);display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:white;letter-spacing:-1px;}
   h2{font-size:1.3rem;font-weight:700;margin:0 0 8px;}
   p{font-size:0.9rem;color:#8A94A6;line-height:1.7;margin:0 0 16px;}
   .btn{display:inline-block;padding:12px 28px;background:#2D6AFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:0.9rem;margin:16px 0;}
@@ -31,7 +31,7 @@ const baseLayout = (content) => `
 </style></head>
 <body><div class="wrap">
 <div class="card">
-  <div class="logo"><span class="logo-mark">AC</span>${APP_NAME}</div>
+  <div class="logo"><span style="font-weight:700;color:#2D6AFF;">A</span><span style="color:#00C2CB;">C</span>${APP_NAME}</div>
   ${content}
 </div>
 <div class="footer">
