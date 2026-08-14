@@ -19,7 +19,7 @@ const APP = {
     if (override) return override;
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:4000/api';
-    return 'https://arbicap-production.up.railway.app';
+    return 'https://arbicap-production.up.railway.app/api';
   })(),
   wsBase:   'wss://ws.arbicap.vercel.app',
 
