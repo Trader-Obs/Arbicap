@@ -58,6 +58,38 @@
     .terms-check a { color: var(--accent); }
 
     .country-flag { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+
+    @media (max-width: 900px) {
+      .auth-page {
+        grid-template-columns: 1fr;
+      }
+      .auth-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 30px 24px;
+      }
+      .auth-right {
+        padding: 28px 20px 36px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .auth-left,
+      .auth-right {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .auth-form-wrap {
+        max-width: 100%;
+      }
+      #step-1 > div[style*="display:grid;grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+      .flex.gap-8 { flex-direction: column; }
+      .flex.gap-8 > * {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
