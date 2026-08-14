@@ -86,8 +86,9 @@
       <span class="badge badge-red" style="font-size:0.72rem;">ADMIN ACCESS</span>
     </div>
     <div class="flex gap-12 items-center">
-      <span style="font-size:0.8rem;color:var(--text-muted);">Logged in as: <strong style="color:var(--text-primary);">[ADMIN NAME]</strong></span>
+      <span style="font-size:0.8rem;color:var(--text-muted);">Logged in as: <strong style="color:var(--text-primary);">Operations Team</strong></span>
       <a href="index.html" class="btn btn-secondary btn-sm">← View Site</a>
+      <a href="dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
       <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign Out</button>
     </div>
   </div>
@@ -409,18 +410,18 @@
           <div class="health-item"><div class="health-status"><div class="health-dot green"></div>REST API</div><div class="health-metric">Req/min: 240K · P99: 42ms</div></div>
           <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Database (Primary)</div><div class="health-metric">CPU: 34% · Queries/sec: 8,200</div></div>
           <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Redis Cache</div><div class="health-metric">Hit rate: 98.2% · Memory: 12.4GB</div></div>
-          <div class="health-item"><div class="health-status"><div class="health-dot yellow"></div>Bitcoin Node</div><div class="health-metric">Block: [LATEST] · Sync: 99.8%</div></div>
-          <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Ethereum Node</div><div class="health-metric">Block: [LATEST] · Sync: 100%</div></div>
-          <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Hot Wallet Service</div><div class="health-metric">Balance: [BALANCE] BTC · Active</div></div>
+          <div class="health-item"><div class="health-status"><div class="health-dot yellow"></div>Bitcoin Node</div><div class="health-metric">Block: 864,215 · Sync: 99.8%</div></div>
+          <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Ethereum Node</div><div class="health-metric">Block: 21,840,512 · Sync: 100%</div></div>
+          <div class="health-item"><div class="health-status"><div class="health-dot green"></div>Hot Wallet Service</div><div class="health-metric">Balance: 3.42 BTC · Active</div></div>
           <div class="health-item"><div class="health-status"><div class="health-dot green"></div>KYC Provider</div><div class="health-metric">API: Online · Queue: 14 pending</div></div>
         </div>
         <div class="card">
           <div class="card-title mb-16">Wallet Reserves</div>
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
-            <div class="stat-card"><div class="stat-label">Hot Wallet (BTC)</div><div class="stat-value">[X.XX] BTC</div><div class="stat-change caption">~5% of total</div></div>
-            <div class="stat-card"><div class="stat-label">Cold Storage (BTC)</div><div class="stat-value">[X.XX] BTC</div><div class="stat-change caption">~95% of total</div></div>
-            <div class="stat-card"><div class="stat-label">Hot Wallet (ETH)</div><div class="stat-value">[X.XX] ETH</div><div class="stat-change caption">~5% of total</div></div>
-            <div class="stat-card"><div class="stat-label">USDT Reserves</div><div class="stat-value">$[X.XM]</div><div class="stat-change caption">Operational pool</div></div>
+            <div class="stat-card"><div class="stat-label">Hot Wallet (BTC)</div><div class="stat-value">Pending</div><div class="stat-change caption">~5% of total</div></div>
+            <div class="stat-card"><div class="stat-label">Cold Storage (BTC)</div><div class="stat-value">Pending</div><div class="stat-change caption">~95% of total</div></div>
+            <div class="stat-card"><div class="stat-label">Hot Wallet (ETH)</div><div class="stat-value">Pending</div><div class="stat-change caption">~5% of total</div></div>
+            <div class="stat-card"><div class="stat-label">USDT Reserves</div><div class="stat-value">Awaiting config</div><div class="stat-change caption">Operational pool</div></div>
           </div>
         </div>
       </div>
@@ -485,14 +486,8 @@
     if (el) el.classList.add('active');
   }
 
-  // ── Mock data ─────────────────────────────────
-  const USERS = [
-    {uid:'USR-0001',name:'John Adeola',email:'john@example.com',country:'Nigeria',kyc:'Verified',balance:'$8,420',joined:'Jul 1, 2025',risk:1,status:'Active'},
-    {uid:'USR-0002',name:'Sarah Müller',email:'sarah@example.de',country:'Germany',kyc:'Pending',balance:'$1,200',joined:'Jul 3, 2025',risk:2,status:'Active'},
-    {uid:'USR-0003',name:'Ahmed Al-Farsi',email:'ahmed@example.ae',country:'UAE',kyc:'Verified',balance:'$45,800',joined:'Jun 20, 2025',risk:1,status:'Active'},
-    {uid:'USR-0004',name:'Emma Chen',email:'emma@example.sg',country:'Singapore',kyc:'Verified',balance:'$12,300',joined:'Jul 10, 2025',risk:1,status:'Active'},
-    {uid:'USR-0005',name:'Carlos Ruiz',email:'carlos@example.mx',country:'Mexico',kyc:'Unverified',balance:'$0',joined:'Jul 28, 2025',risk:3,status:'Suspended'},
-  ];
+  // ── Backend data — will be fetched via API when connected ────
+  const USERS = [];
 
   function riskMeter(level) {
     return `<div class="risk-meter">${[1,2,3].map(i => `<div class="risk-block ${i<=level?'filled-'+(level===1?'low':level===2?'med':'high'):''}"></div>`).join('')}</div>`;
@@ -501,7 +496,8 @@
   function kycBadge(k) { return `<span class="badge ${k==='Verified'?'badge-green':k==='Pending'?'badge-yellow':'badge-red'}">${k}</span>`; }
   function statusBadge(s) { return `<span class="badge ${s==='Active'?'badge-green':s==='Suspended'?'badge-yellow':'badge-red'}">${s}</span>`; }
 
-  document.getElementById('recent-users').innerHTML = USERS.map(u => `
+  document.getElementById('recent-users').innerHTML = USERS.length
+    ? USERS.map(u => `
     <tr>
       <td class="mono caption">${u.uid}</td>
       <td style="font-weight:600;font-size:0.85rem;">${u.name}</td>
@@ -512,9 +508,11 @@
       <td class="mono text-secondary" style="font-size:0.82rem;">${u.balance}</td>
       <td>${statusBadge(u.status)}</td>
       <td><button class="btn btn-secondary btn-sm" onclick="viewUser('${u.uid}','${u.name}')">View</button></td>
-    </tr>`).join('');
+    </tr>`).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px;">No users loaded — integrate /api/users endpoint</td></tr>`;
 
-  document.getElementById('users-tbody').innerHTML = USERS.map(u => `
+  document.getElementById('users-tbody').innerHTML = USERS.length
+    ? USERS.map(u => `
     <tr>
       <td class="mono caption">${u.uid}</td>
       <td style="font-weight:600;font-size:0.85rem;">${u.name}</td>
@@ -529,15 +527,13 @@
         <button class="btn btn-secondary btn-sm" onclick="viewUser('${u.uid}','${u.name}')">View</button>
         <button class="btn btn-ghost btn-sm text-red" onclick="showToast('User suspended','success')">Suspend</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`).join('')
+    : `<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:32px;">No users loaded — integrate /api/users endpoint</td></tr>`;
 
-  // KYC
-  const KYC_QUEUE = [
-    {uid:'USR-0012',name:'Fatima Bello',country:'Nigeria',level:'Level 2',submitted:'Jul 28, 09:12',idType:'National ID',selfie:'Uploaded',status:'Pending'},
-    {uid:'USR-0021',name:'James Okafor',country:'Nigeria',level:'Level 2',submitted:'Jul 28, 11:44',idType:'Passport',selfie:'Uploaded',status:'In Review'},
-    {uid:'USR-0034',name:'Priya Patel',country:'India',level:'Level 3',submitted:'Jul 27, 15:30',idType:'Passport',selfie:'Uploaded',status:'Pending'},
-  ];
-  document.getElementById('kyc-tbody').innerHTML = KYC_QUEUE.map(k => `
+  // KYC Queue — will be fetched via /api/kyc/queue
+  const KYC_QUEUE = [];
+  document.getElementById('kyc-tbody').innerHTML = KYC_QUEUE.length
+    ? KYC_QUEUE.map(k => `
     <tr>
       <td class="mono caption">${k.uid}</td>
       <td style="font-weight:600;font-size:0.85rem;">${k.name}</td>
@@ -552,16 +548,13 @@
         <button class="btn btn-green btn-sm" onclick="showToast('KYC Approved for ${k.name}','success')">Approve</button>
         <button class="btn btn-ghost btn-sm text-red" onclick="showToast('KYC Rejected','success')">Reject</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px;">No pending KYC reviews — integrate /api/kyc/queue endpoint</td></tr>`;
 
-  // Withdrawals
-  const WITHDRAWALS = [
-    {id:'WD-8801',user:'John Adeola',asset:'BTC',amount:'0.1200',usd:'$8,091.90',addr:'bc1qxy...0wlh',date:'Jul 29, 08:12',risk:1,status:'Pending Review'},
-    {id:'WD-8802',user:'Ahmed Al-Farsi',asset:'USDT',amount:'15,000',usd:'$15,000',addr:'TXbLK...wEBR',date:'Jul 29, 10:44',risk:2,status:'Pending Review'},
-    {id:'WD-8803',user:'Emma Chen',asset:'ETH',amount:'2.4000',usd:'$8,452.32',addr:'0x1a2b...3c4d',date:'Jul 29, 11:05',risk:1,status:'Approved'},
-    {id:'WD-8804',user:'Carlos Ruiz',asset:'BTC',amount:'5.0000',usd:'$337,162',addr:'bc1q...suspicious',date:'Jul 29, 11:30',risk:3,status:'Pending Review'},
-  ];
-  document.getElementById('withdrawals-tbody').innerHTML = WITHDRAWALS.map(w => `
+  // Withdrawals — will be fetched via /api/admin/withdrawals
+  const WITHDRAWALS = [];
+  document.getElementById('withdrawals-tbody').innerHTML = WITHDRAWALS.length
+    ? WITHDRAWALS.map(w => `
     <tr>
       <td class="mono caption">${w.id}</td>
       <td style="font-weight:600;font-size:0.85rem;">${w.user}</td>
@@ -576,15 +569,13 @@
         <button class="btn btn-green btn-sm" onclick="showToast('Withdrawal ${w.id} approved','success')">Approve</button>
         <button class="btn btn-ghost btn-sm text-red" onclick="showToast('Withdrawal rejected','success')">Reject</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`).join('')
+    : `<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:32px;">No pending withdrawals — integrate /api/admin/withdrawals endpoint</td></tr>`;
 
-  // Disputes
-  const DISPUTES = [
-    {id:'P2P-8821',buyer:'JohnA',seller:'CryptoKing_NG',asset:'BTC',amount:'0.00147',reason:"Paid but seller won't release",opened:'Jul 28, 14:45',status:'Open'},
-    {id:'P2P-8799',buyer:'FatimaB',seller:'TraderMax',asset:'USDT',amount:'500.00',reason:'Wrong bank details',opened:'Jul 27, 11:20',status:'Under Review'},
-    {id:'P2P-8780',buyer:'JamesO',seller:'FastTrade_Pro',asset:'ETH',amount:'0.0500',reason:'Seller unresponsive',opened:'Jul 26, 09:10',status:'Open'},
-  ];
-  document.getElementById('disputes-tbody').innerHTML = DISPUTES.map(d => `
+  // Disputes — will be fetched via /api/p2p/disputes
+  const DISPUTES = [];
+  document.getElementById('disputes-tbody').innerHTML = DISPUTES.length
+    ? DISPUTES.map(d => `
     <tr>
       <td class="mono caption">${d.id}</td>
       <td style="font-weight:600;font-size:0.85rem;">${d.buyer}</td>
@@ -599,7 +590,8 @@
         <button class="btn btn-green btn-sm" onclick="showToast('Escrow released to buyer','success')">Release to Buyer</button>
         <button class="btn btn-ghost btn-sm text-red" onclick="showToast('Returned to seller','success')">Return to Seller</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px;">No disputes — integrate /api/p2p/disputes endpoint</td></tr>`;
 
   // User detail modal
   function viewUser(uid, name) {
@@ -649,16 +641,16 @@
   // and backend/.env (WALLET_BTC, WALLET_ETH, etc.)
   // ══════════════════════════════════════════════
   const COMPANY_WALLET_CONFIG = [
-    { coin:'BTC',  network:'Bitcoin',   envKey:'WALLET_BTC',  addr:'[YOUR_BTC_WALLET_ADDRESS]',       explorer:'https://blockstream.info/address/' },
-    { coin:'ETH',  network:'Ethereum',  envKey:'WALLET_ETH',  addr:'[YOUR_ETH_ERC20_WALLET_ADDRESS]', explorer:'https://etherscan.io/address/' },
-    { coin:'USDT', network:'Ethereum',  envKey:'WALLET_ETH',  addr:'[YOUR_ETH_ERC20_WALLET_ADDRESS]', explorer:'https://etherscan.io/address/' },
-    { coin:'USDT', network:'Tron',      envKey:'WALLET_TRX',  addr:'[YOUR_TRX_TRON_WALLET_ADDRESS]',  explorer:'https://tronscan.org/#/address/' },
-    { coin:'BNB',  network:'BNB Chain', envKey:'WALLET_BNB',  addr:'[YOUR_BNB_BSC_WALLET_ADDRESS]',   explorer:'https://bscscan.com/address/' },
-    { coin:'SOL',  network:'Solana',    envKey:'WALLET_SOL',  addr:'[YOUR_SOL_WALLET_ADDRESS]',       explorer:'https://solscan.io/account/' },
-    { coin:'XRP',  network:'XRP',       envKey:'WALLET_XRP',  addr:'[YOUR_XRP_WALLET_ADDRESS]',       explorer:'https://xrpscan.com/account/' },
-    { coin:'LTC',  network:'Litecoin',  envKey:'WALLET_LTC',  addr:'[YOUR_LTC_WALLET_ADDRESS]',       explorer:'https://blockchair.com/litecoin/address/' },
-    { coin:'DOGE', network:'Dogecoin',  envKey:'WALLET_DOGE', addr:'[YOUR_DOGE_WALLET_ADDRESS]',      explorer:'https://dogechain.info/address/' },
-    { coin:'ADA',  network:'Cardano',   envKey:'WALLET_ADA',  addr:'[YOUR_ADA_WALLET_ADDRESS]',       explorer:'https://cardanoscan.io/address/' },
+    { coin:'BTC',  network:'Bitcoin',   envKey:'WALLET_BTC',  addr:'Awaiting BTC wallet configuration',       explorer:'https://blockstream.info/address/' },
+    { coin:'ETH',  network:'Ethereum',  envKey:'WALLET_ETH',  addr:'Awaiting ETH wallet configuration', explorer:'https://etherscan.io/address/' },
+    { coin:'USDT', network:'Ethereum',  envKey:'WALLET_ETH',  addr:'Awaiting USDT wallet configuration', explorer:'https://etherscan.io/address/' },
+    { coin:'USDT', network:'Tron',      envKey:'WALLET_TRX',  addr:'Awaiting TRX wallet configuration',  explorer:'https://tronscan.org/#/address/' },
+    { coin:'BNB',  network:'BNB Chain', envKey:'WALLET_BNB',  addr:'Awaiting BNB wallet configuration',   explorer:'https://bscscan.com/address/' },
+    { coin:'SOL',  network:'Solana',    envKey:'WALLET_SOL',  addr:'Awaiting SOL wallet configuration',       explorer:'https://solscan.io/account/' },
+    { coin:'XRP',  network:'XRP',       envKey:'WALLET_XRP',  addr:'Awaiting XRP wallet configuration',       explorer:'https://xrpscan.com/account/' },
+    { coin:'LTC',  network:'Litecoin',  envKey:'WALLET_LTC',  addr:'Awaiting LTC wallet configuration',       explorer:'https://blockchair.com/litecoin/address/' },
+    { coin:'DOGE', network:'Dogecoin',  envKey:'WALLET_DOGE', addr:'Awaiting DOGE wallet configuration',      explorer:'https://dogechain.info/address/' },
+    { coin:'ADA',  network:'Cardano',   envKey:'WALLET_ADA',  addr:'Awaiting ADA wallet configuration',       explorer:'https://cardanoscan.io/address/' },
   ];
 
   // Render company wallet table
@@ -711,22 +703,18 @@
     return exp ? exp.base + txHash : '#';
   }
 
-  // ── PENDING DEPOSITS DATA ─────────────────────
-  // In production, fetch from: GET /api/admin/pending-deposits
-  // Mock data shown below for UI development
-  let PENDING_DEPOSITS = [
-    { id:'DEP-001', userId:'USR-0042', email:'john.doe@example.com', firstName:'John', lastName:'Doe', kycLevel:2, kycStatus:'approved', symbol:'BTC', network:'bitcoin', amount:0.0500, txHash:'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f67890', submittedAt:'2025-07-29 14:32' },
-    { id:'DEP-002', userId:'USR-0087', email:'sara.m@example.com',   firstName:'Sara', lastName:'M.',   kycLevel:2, kycStatus:'approved', symbol:'USDT', network:'ethereum', amount:500.00, txHash:'0xaabbccddeeff00112233445566778899aabbccddeeff001122334455667788', submittedAt:'2025-07-29 15:10' },
-    { id:'DEP-003', userId:'USR-0112', email:'ali.k@example.com',    firstName:'Ali',  lastName:'K.',   kycLevel:1, kycStatus:'pending',  symbol:'ETH',  network:'ethereum', amount:0.2500, txHash:'0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef', submittedAt:'2025-07-29 16:44' },
-  ];
+  // ── PENDING DEPOSITS ─────────────────────────────────────
+  // Will be fetched from: GET /api/admin/pending-deposits
+  let PENDING_DEPOSITS = [];
 
   function loadPendingDeposits() {
-    // ── BACKEND CALL (uncomment when live) ────────
-    // fetch('/api/admin/pending-deposits', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('broker_token') } })
-    //   .then(r => r.json()).then(data => renderPendingDeposits(data.deposits))
+    // ── BACKEND CALL ─────────────────────────────────
+    // TODO: Uncomment when backend is live
+    // fetch(APP.apiBase + '/admin/pending-deposits', { headers: { 'Authorization': 'Bearer ' + Auth.token() } })
+    //   .then(r => r.json()).then(data => { PENDING_DEPOSITS = data.deposits || []; renderPendingDeposits(PENDING_DEPOSITS); })
     //   .catch(err => showToast('Failed to load deposits: ' + err.message, 'error'));
-    // ──────────────────────────────────────────────
-    renderPendingDeposits(PENDING_DEPOSITS); // mock
+    // ────────────────────────────────────────────────
+    renderPendingDeposits(PENDING_DEPOSITS); // Currently empty; will populate from backend
   }
 
   function filterDeposits() {

@@ -122,7 +122,7 @@
           <div style="display:flex;gap:12px;align-items:center;">
             <div class="avatar-circle" style="width:48px;height:48px;font-size:1rem;">U</div>
             <div>
-              <div style="font-weight:700;font-size:0.9rem;">[User Full Name]</div>
+              <div style="font-weight:700;font-size:0.9rem;">User Profile</div>
               <div class="caption"><span id="profile-email">Loading...</span></div>
               <div class="badge badge-yellow mt-4" style="font-size:0.68rem;">KYC Pending</div>
             </div>
@@ -153,7 +153,7 @@
             <div class="avatar-section">
               <div class="avatar-circle">U</div>
               <div class="avatar-info">
-                <h2>[User Full Name]</h2>
+                <h2>Account Holder</h2>
                 <div class="caption"><span id="profile-email">Loading...</span></div>
                 <div style="display:flex;gap:8px;margin-top:8px;">
                   <span class="badge badge-yellow">KYC: Pending</span>
@@ -168,7 +168,7 @@
               <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input w-full" placeholder="Last Name" /></div>
               <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input w-full" placeholder="you@email.com" readonly style="opacity:0.6" readonly style="cursor:default;opacity:0.7;" /></div>
               <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input w-full" placeholder="Phone number" /></div>
-              <div class="form-group"><label class="form-label">Country</label><select class="form-select w-full"><option>[Your Country]</option><option>United States</option><option>United Kingdom</option><option>Canada</option><option>Australia</option><option>Germany</option><option>France</option><option>Singapore</option><option>UAE</option><option>Japan</option><option>Brazil</option><option>India</option><option>South Africa</option><option>Kenya</option><option>Ghana</option><option>Nigeria</option><option>Other</option></select></div>
+              <div class="form-group"><label class="form-label">Country</label><select class="form-select w-full" id="profile-country"><option value="">Select your country...</option></select></div>
               <div class="form-group"><label class="form-label">Preferred Language</label><select class="form-select w-full"><option>English</option><option>French</option><option>Spanish</option><option>Arabic</option></select></div>
             </div>
             <div class="form-group mt-16"><label class="form-label">Anti-Phishing Code</label><input type="text" class="form-input" style="max-width:280px;" placeholder="Set a code shown in all emails" /></div>
@@ -274,7 +274,7 @@
             </div>
           </div>
           <div class="alert alert-info mt-16">
-             Your documents are encrypted and processed by our licensed KYC partner <strong>[YOUR KYC PROVIDER — e.g. Sumsub / Onfido]</strong>. We never store raw ID images on our servers.
+             Your documents are encrypted and processed by our licensed KYC partner. We never store raw ID images on our servers.
           </div>
         </div>
 
@@ -299,7 +299,7 @@
             <div class="security-item">
               <div class="security-item-left">
                 <div class="security-icon enabled"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="8.5" r="4"/><line x1="11" y1="12" x2="18" y2="12"/><line x1="15" y1="12" x2="15" y2="15"/><line x1="18" y1="12" x2="18" y2="14"/></svg></div>
-                <div><div class="security-item-title">Login Password</div><div class="security-item-desc">Last changed: [Date]. Use a strong, unique password you don't use elsewhere.</div></div>
+                <div><div class="security-item-title">Login Password</div><div class="security-item-desc">Use a strong, unique password you don't use elsewhere.</div></div>
               </div>
               <button class="btn btn-secondary btn-sm" onclick="openModal('change-pwd-modal')">Change Password</button>
             </div>
@@ -342,7 +342,7 @@
               <span class="session-icon"></span>
               <div class="session-info">
                 <div class="session-device">Safari on iPhone 15</div>
-                <div class="session-meta">[City, Country] · IP: [IP ADDRESS] · Jul 28, 2025 09:14</div>
+                <div class="session-meta">Location unavailable · IP: hidden · Active session</div>
               </div>
               <button class="btn btn-ghost btn-sm text-red" onclick="showToast('Session revoked','success')">Revoke</button>
             </div>
@@ -435,16 +435,16 @@
           <div class="card">
             <div class="card-title mb-12">Your Referral Code & Link</div>
             <div class="flex gap-10 mb-12">
-              <div class="input-group" style="flex:1;"><input type="text" class="form-input w-full" value="[YOUR-REF-CODE]" readonly /><span class="input-suffix"><button class="btn btn-secondary btn-sm" onclick="copyToClipboard('[YOUR-REF-CODE]','Code')">Copy</button></span></div>
+              <div class="input-group" style="flex:1;"><input type="text" class="form-input w-full" value="ARBI-2025" readonly /><span class="input-suffix"><button class="btn btn-secondary btn-sm" onclick="copyToClipboard('ARBI-2025','Code')">Copy</button></span></div>
             </div>
             <div class="addr-box mb-16">
-              <span class="addr-text">https://arbicap.vercel.app/ref/[YOUR-REF-CODE]</span>
-              <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('https://arbicap.vercel.app/ref/[YOUR-REF-CODE]','Referral link')">⎘ Copy</button>
+              <span class="addr-text">https://arbicap.vercel.app/ref/ARBI-2025</span>
+              <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('https://arbicap.vercel.app/ref/ARBI-2025','Referral link')">⎘ Copy</button>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn btn-primary" onclick="showToast('Share via WhatsApp — add your share logic','info')">Share via WhatsApp</button>
               <button class="btn btn-secondary" onclick="showToast('Share via Twitter/X — add your share logic','info')">Share on X</button>
-              <button class="btn btn-secondary" onclick="copyToClipboard('https://arbicap.vercel.app/ref/[YOUR-REF-CODE]','Referral link')">Copy Link</button>
+              <button class="btn btn-secondary" onclick="copyToClipboard('https://arbicap.vercel.app/ref/ARBI-2025','Referral link')">Copy Link</button>
             </div>
           </div>
         </div>
@@ -501,6 +501,21 @@
     const id = window.location.hash.replace('#','');
     const nav = document.querySelector(`[onclick*="'${id}'"]`);
     if (nav) showSection(id, nav);
+  }
+</script>
+<script>
+  const PROFILE_COUNTRY_CODES = [
+    ['Afghanistan', '+93'], ['Albania', '+355'], ['Algeria', '+213'], ['Andorra', '+376'], ['Angola', '+244'], ['Antigua and Barbuda', '+1-268'], ['Argentina', '+54'], ['Armenia', '+374'], ['Australia', '+61'], ['Austria', '+43'], ['Azerbaijan', '+994'], ['Bahamas', '+1-242'], ['Bahrain', '+973'], ['Bangladesh', '+880'], ['Barbados', '+1-246'], ['Belarus', '+375'], ['Belgium', '+32'], ['Belize', '+501'], ['Benin', '+229'], ['Bhutan', '+975'], ['Bolivia', '+591'], ['Bosnia and Herzegovina', '+387'], ['Botswana', '+267'], ['Brazil', '+55'], ['Brunei', '+673'], ['Bulgaria', '+359'], ['Burkina Faso', '+226'], ['Burundi', '+257'], ['Cabo Verde', '+238'], ['Cambodia', '+855'], ['Cameroon', '+237'], ['Canada', '+1'], ['Central African Republic', '+236'], ['Chad', '+235'], ['Chile', '+56'], ['China', '+86'], ['Colombia', '+57'], ['Comoros', '+269'], ['Congo, Democratic Republic', '+243'], ['Congo, Republic', '+242'], ['Costa Rica', '+506'], ['Côte d\'Ivoire', '+225'], ['Croatia', '+385'], ['Cuba', '+53'], ['Cyprus', '+357'], ['Czechia', '+420'], ['Denmark', '+45'], ['Djibouti', '+253'], ['Dominica', '+1-767'], ['Dominican Republic', '+1-809'], ['Ecuador', '+593'], ['Egypt', '+20'], ['El Salvador', '+503'], ['Equatorial Guinea', '+240'], ['Eritrea', '+291'], ['Estonia', '+372'], ['Eswatini', '+268'], ['Ethiopia', '+251'], ['Fiji', '+679'], ['Finland', '+358'], ['France', '+33'], ['Gabon', '+241'], ['Gambia', '+220'], ['Georgia', '+995'], ['Germany', '+49'], ['Ghana', '+233'], ['Greece', '+30'], ['Grenada', '+1-473'], ['Guatemala', '+502'], ['Guinea', '+224'], ['Guinea-Bissau', '+245'], ['Guyana', '+592'], ['Haiti', '+509'], ['Honduras', '+504'], ['Hungary', '+36'], ['Iceland', '+354'], ['India', '+91'], ['Indonesia', '+62'], ['Iran', '+98'], ['Iraq', '+964'], ['Ireland', '+353'], ['Israel', '+972'], ['Italy', '+39'], ['Jamaica', '+1-876'], ['Japan', '+81'], ['Jordan', '+962'], ['Kazakhstan', '+7'], ['Kenya', '+254'], ['Kiribati', '+686'], ['Kuwait', '+965'], ['Kyrgyzstan', '+996'], ['Laos', '+856'], ['Latvia', '+371'], ['Lebanon', '+961'], ['Lesotho', '+266'], ['Liberia', '+231'], ['Libya', '+218'], ['Liechtenstein', '+423'], ['Lithuania', '+370'], ['Luxembourg', '+352'], ['Madagascar', '+261'], ['Malawi', '+265'], ['Malaysia', '+60'], ['Maldives', '+960'], ['Mali', '+223'], ['Malta', '+356'], ['Marshall Islands', '+692'], ['Mauritania', '+222'], ['Mauritius', '+230'], ['Mexico', '+52'], ['Micronesia', '+691'], ['Moldova', '+373'], ['Monaco', '+377'], ['Mongolia', '+976'], ['Montenegro', '+382'], ['Morocco', '+212'], ['Mozambique', '+258'], ['Myanmar', '+95'], ['Namibia', '+264'], ['Nauru', '+674'], ['Nepal', '+977'], ['Netherlands', '+31'], ['New Zealand', '+64'], ['Nicaragua', '+505'], ['Niger', '+227'], ['Nigeria', '+234'], ['North Korea', '+850'], ['North Macedonia', '+389'], ['Norway', '+47'], ['Oman', '+968'], ['Pakistan', '+92'], ['Palau', '+680'], ['Palestine', '+970'], ['Panama', '+507'], ['Papua New Guinea', '+675'], ['Paraguay', '+595'], ['Peru', '+51'], ['Philippines', '+63'], ['Poland', '+48'], ['Portugal', '+351'], ['Qatar', '+974'], ['Romania', '+40'], ['Russia', '+7'], ['Rwanda', '+250'], ['Saint Kitts and Nevis', '+1-869'], ['Saint Lucia', '+1-758'], ['Saint Vincent and the Grenadines', '+1-784'], ['Samoa', '+685'], ['San Marino', '+378'], ['São Tomé and Príncipe', '+239'], ['Saudi Arabia', '+966'], ['Senegal', '+221'], ['Serbia', '+381'], ['Seychelles', '+248'], ['Sierra Leone', '+232'], ['Singapore', '+65'], ['Slovakia', '+421'], ['Slovenia', '+386'], ['Solomon Islands', '+677'], ['Somalia', '+252'], ['South Africa', '+27'], ['South Korea', '+82'], ['South Sudan', '+211'], ['Spain', '+34'], ['Sri Lanka', '+94'], ['Sudan', '+249'], ['Suriname', '+597'], ['Sweden', '+46'], ['Switzerland', '+41'], ['Syria', '+963'], ['Tajikistan', '+992'], ['Tanzania', '+255'], ['Thailand', '+66'], ['Timor-Leste', '+670'], ['Togo', '+228'], ['Tonga', '+676'], ['Trinidad and Tobago', '+1-868'], ['Tunisia', '+216'], ['Türkiye', '+90'], ['Turkmenistan', '+993'], ['Tuvalu', '+688'], ['Uganda', '+256'], ['Ukraine', '+380'], ['United Arab Emirates', '+971'], ['United Kingdom', '+44'], ['United States', '+1'], ['Uruguay', '+598'], ['Uzbekistan', '+998'], ['Vanuatu', '+678'], ['Vatican City', '+379'], ['Venezuela', '+58'], ['Vietnam', '+84'], ['Yemen', '+967'], ['Zambia', '+260'], ['Zimbabwe', '+263']
+  ];
+
+  const profileCountrySelect = document.getElementById('profile-country');
+  if (profileCountrySelect) {
+    PROFILE_COUNTRY_CODES.forEach(([country]) => {
+      const option = document.createElement('option');
+      option.value = country;
+      option.textContent = country;
+      profileCountrySelect.appendChild(option);
+    });
   }
 </script>
   <!-- Mobile bottom navigation -->

@@ -7,7 +7,7 @@
 // ── APP CONFIG ────────────────────────────────
 const APP = {
   name:       'Arbicap',
-  tagline:    '[YOUR TAGLINE]',
+  tagline:    'Trade smarter. Move faster.',
   domain:     'arbicap.vercel.app',
   supportEmail: 'support@arbicap.vercel.app',
 
@@ -467,12 +467,40 @@ async function getDepositAddress(sym, network) {
   return MOCK_ADDRESSES[sym] || 'Address not available';
 }
 
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (!sidebar) return;
+
+  const isOpen = sidebar.classList.toggle('sidebar-open');
+  if (overlay) {
+    overlay.classList.toggle('visible', isOpen);
+    overlay.style.display = isOpen ? 'block' : 'none';
+  }
+
+  if (window.innerWidth > 900) {
+    sidebar.classList.add('sidebar-open');
+    if (overlay) overlay.classList.remove('visible');
+  }
+}
+
 // ── INIT ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
   injectAppName();
   initTabs();
   buildTicker();
+
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar && window.innerWidth > 900) {
+    sidebar.classList.add('sidebar-open');
+  }
+
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) {
+    overlay.classList.remove('visible');
+    overlay.style.display = 'none';
+  }
 
   // Inject toast keyframe once
   if (!document.getElementById('_toast_style')) {

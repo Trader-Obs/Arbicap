@@ -1,5 +1,5 @@
 /**
- * [YOUR EXCHANGE NAME] — Main Server
+ * Arbicap — Main Server
  * Express REST API + WebSocket Server
  */
 'use strict';
@@ -106,7 +106,7 @@ async function start() {
     startDepositMonitor();  logger.info('✅ Deposit monitor started');
 
     const PORT = process.env.PORT || 4000;
-    server.listen(PORT, () => logger.info(`🚀 [YOUR EXCHANGE NAME] API running on port ${PORT}`));
+    server.listen(PORT, () => logger.info(`🚀 Arbicap API running on port ${PORT}`));
   } catch (err) {
     logger.error('❌ Startup failed:', err.message);
     process.exit(1);

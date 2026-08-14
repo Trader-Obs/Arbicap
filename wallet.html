@@ -325,15 +325,8 @@
           <!-- Address Book -->
           <div class="card">
             <div class="card-header"><span class="card-title">Address Book</span><button class="btn btn-secondary btn-sm" onclick="openModal('add-addr-modal')">+ Add</button></div>
-            <div id="addr-book">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
-                <div><div style="font-size:0.85rem;font-weight:600;">My Ledger Wallet</div><div class="mono caption">bc1qxy...0wlh</div></div>
-                <div class="flex gap-4"><span class="badge badge-blue">BTC</span><button class="btn btn-ghost btn-sm" onclick="showToast('Address deleted','success')"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,6 16,6"/><path d="M7 6V4h6v2"/><rect x="5" y="6" width="10" height="12" rx="1"/><line x1="8" y1="10" x2="8" y2="15"/><line x1="12" y1="10" x2="12" y2="15"/></svg></button></div>
-              </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
-                <div><div style="font-size:0.85rem;font-weight:600;">Binance Hot Wallet</div><div class="mono caption">0x1a2b...3c4d</div></div>
-                <div class="flex gap-4"><span class="badge badge-blue">ETH</span><button class="btn btn-ghost btn-sm" onclick="showToast('Address deleted','success')"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,6 16,6"/><path d="M7 6V4h6v2"/><rect x="5" y="6" width="10" height="12" rx="1"/><line x1="8" y1="10" x2="8" y2="15"/><line x1="12" y1="10" x2="12" y2="15"/></svg></button></div>
-              </div>
+            <div id="addr-book" style="padding:12px 0;text-align:center;color:var(--text-muted);font-size:0.85rem;">
+              No saved addresses yet. Add a withdrawal address to quicken future transactions.
             </div>
           </div>
 
@@ -425,17 +418,17 @@
   // Fill these in to match your real wallet addresses.
   // Also set them in backend/services/custody.js and backend/.env
   const COMPANY_WALLETS = {
-    BTC:  { bitcoin:   '[YOUR_BTC_WALLET_ADDRESS]' },
-    ETH:  { ethereum:  '[YOUR_ETH_ERC20_WALLET_ADDRESS]' },
-    USDT: { ethereum:  '[YOUR_ETH_ERC20_WALLET_ADDRESS]', tron: '[YOUR_TRX_TRON_WALLET_ADDRESS]', bsc: '[YOUR_BNB_BSC_WALLET_ADDRESS]' },
-    BNB:  { bsc:       '[YOUR_BNB_BSC_WALLET_ADDRESS]' },
-    SOL:  { solana:    '[YOUR_SOL_WALLET_ADDRESS]' },
-    XRP:  { xrp:       '[YOUR_XRP_WALLET_ADDRESS]' },
-    LTC:  { litecoin:  '[YOUR_LTC_WALLET_ADDRESS]' },
-    ADA:  { cardano:   '[YOUR_ADA_WALLET_ADDRESS]' },
-    DOGE: { dogecoin:  '[YOUR_DOGE_WALLET_ADDRESS]' },
+    BTC:  { bitcoin:   'Awaiting BTC wallet configuration' },
+    ETH:  { ethereum:  'Awaiting ETH wallet configuration' },
+    USDT: { ethereum:  'Awaiting USDT wallet configuration', tron: 'Awaiting TRX wallet configuration', bsc: 'Awaiting BNB wallet configuration' },
+    BNB:  { bsc:       'Awaiting BNB wallet configuration' },
+    SOL:  { solana:    'Awaiting SOL wallet configuration' },
+    XRP:  { xrp:       'Awaiting XRP wallet configuration' },
+    LTC:  { litecoin:  'Awaiting LTC wallet configuration' },
+    ADA:  { cardano:   'Awaiting ADA wallet configuration' },
+    DOGE: { dogecoin:  'Awaiting DOGE wallet configuration' },
   };
-  const COMPANY_MEMOS = { XRP_xrp: '[YOUR_XRP_DESTINATION_TAG]' };
+  const COMPANY_MEMOS = { XRP_xrp: 'Set XRP destination tag in environment' };
   const MIN_DEPOSITS  = { BTC:0.0001, ETH:0.001, USDT:5, BNB:0.01, SOL:0.01, XRP:1, LTC:0.01, ADA:1, DOGE:1 };
   const CONFIRMATIONS = { BTC:2, ETH:12, USDT:12, BNB:12, SOL:1, XRP:1, LTC:6, ADA:15, DOGE:6 };
 
