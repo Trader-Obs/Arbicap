@@ -70,11 +70,15 @@
       <a href="markets.html">Markets</a><a href="trade.html"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,14 7,9 11,12 18,5"/><polyline points="14,5 18,5 18,9"/></svg> Trade</a>
       <a href="p2p.html">P2P</a><a href="dashboard.html">Dashboard</a>
     </div>
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" y1="6" x2="17" y2="6"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14" x2="17" y2="14"/></svg>
+    </button>
     <div class="nav-actions">
       <a href="dashboard.html" class="btn btn-secondary btn-sm">← Dashboard</a>
     </div>
   </div>
 </nav>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <div class="wallet-page">
 
@@ -224,30 +228,47 @@
             </div>
 
             <!-- WITHDRAW PANEL -->
+                        <!-- WITHDRAW PANEL -->
             <div class="action-body" id="panel-withdraw" style="display:none;">
-              <div class="maintenance-wrap">
-                <div class="feature-icon-lg icon-chip-muted">
-                  <svg width="32" height="32" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="10" cy="10" r="3"/>
-                    <path d="M17 10a7 7 0 10-7 7"/>
-                    <line x1="14" y1="14" x2="18.5" y2="18.5"/>
-                    <line x1="16" y1="14" x2="18.5" y2="16.5"/>
-                  </svg>
-                </div>
-                <div class="maintenance-title">Withdrawals Temporarily Unavailable</div>
-                <p class="maintenance-desc">
-                  Our withdrawal system is currently undergoing security upgrades to ensure the safest possible experience.<br/><br/>
-                  Your funds are <strong style="color:var(--green);">fully secured</strong> and your balance is unchanged. Withdrawals will resume on our launch date.
-                </p>
-                <div class="alert alert-info" style="text-align:left;font-size:0.8rem;margin-bottom:16px;">
-                  For urgent requests, contact our support team at <strong>support@arbicap.vercel.app</strong>
-                </div>
-                <button class="btn btn-secondary btn-full" onclick="copyToClipboard('support@arbicap.vercel.app','Support email');showToast('Email address copied','success')">
-                  Copy Support Email
-                </button>
+              <div class="form-group mb-12">
+                <label class="form-label">Asset</label>
+                <select class="form-select w-full" id="with-asset" onchange="updateWithdrawAsset(this.value)">
+                  <option value="BTC">Bitcoin (BTC)</option>
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="USDT">Tether (USDT)</option>
+                  <option value="BNB">BNB</option>
+                  <option value="SOL">Solana (SOL)</option>
+                  <option value="XRP">XRP</option>
+                </select>
               </div>
-
-              <!-- Withdrawal form — uncomment on launch day (also set WITHDRAWALS_LIVE=true in .env)
+              <div class="form-group mb-12">
+                <label class="form-label">Network</label>
+                <select class="form-select w-full" id="with-network">
+                  <option>Bitcoin (BTC)</option>
+                </select>
+              </div>
+              <div class="form-group mb-12">
+                <label class="form-label">Recipient Address</label>
+                <input type="text" class="form-input w-full" id="with-addr" placeholder="Paste wallet address..." />
+              </div>
+              <div class="form-group mb-8">
+                <label class="form-label">Amount</label>
+                <div class="input-group">
+                  <input type="number" class="form-input w-full" id="with-amount" placeholder="0.00" step="0.00000001" />
+                  <span class="input-suffix" id="with-sym">BTC</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:14px;">
+                <span class="text-secondary">Available: <span class="mono" id="with-available">0.00</span></span>
+                <button class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:0.75rem;" onclick="setMaxWithdraw()">Max</button>
+              </div>
+              <div class="form-group mb-14">
+                <label class="form-label">2FA Code <span class="caption">(if enabled)</span></label>
+                <input type="text" class="form-input w-full" id="with-2fa" placeholder="6-digit authenticator code" maxlength="6" />
+              </div>
+              <button class="btn btn-primary btn-full" onclick="submitWithdrawForm()">Submit Withdrawal</button>
+            </div>
+<!-- Withdrawal form — uncomment on launch day (also set WITHDRAWALS_LIVE=true in .env)
               <div class="form-group mb-12">
                 <label class="form-label">Asset</label>
                 <select class="form-select w-full" id="with-asset">

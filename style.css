@@ -719,3 +719,132 @@ tbody tr:hover td { background: var(--bg-hover); }
 
 /* ── ALWAYS HIDE MOBILE NAV ON DESKTOP ───────── */
 .mobile-nav { display: none; }
+
+/* ══════════════════════════════════════════════
+   SIDEBAR TOGGLE & OVERLAY
+   ══════════════════════════════════════════════ */
+.sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.sidebar-toggle-btn:hover { background: var(--bg-card); }
+
+/* Sidebar default hidden on all screen sizes — toggle opens it */
+.sidebar {
+  position: fixed;
+  left: -240px;
+  top: 0; bottom: 0;
+  z-index: 200;
+  transition: left 0.25s ease;
+  overflow-y: auto;
+}
+.sidebar.sidebar-open {
+  left: 0;
+}
+
+/* Main content always full width — sidebar overlays it */
+.main-content {
+  margin-left: 0 !important;
+  padding: 24px;
+  width: 100%;
+}
+
+/* Overlay behind sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sidebar-overlay.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* On large screens — sidebar open by default, no overlay */
+@media (min-width: 901px) {
+  .sidebar.sidebar-open {
+    position: fixed;
+  }
+  .main-content {
+    margin-left: 0;
+    padding-left: 260px !important;
+  }
+  .sidebar-overlay.visible {
+    display: none !important;
+  }
+}
+
+/* ── WITHDRAWAL TAB — looks normal ──────────── */
+.withdraw-notice { display: none; }
+.maintenance-wrap {
+  padding: 0;
+  text-align: left;
+  max-width: 100%;
+}
+.maintenance-wrap .maintenance-title { display: none; }
+.maintenance-wrap .maintenance-desc  { display: none; }
+.maintenance-wrap .alert-info        { display: none; }
+.maintenance-wrap .btn-secondary     { display: none; }
+
+/* ── REGISTER PAGE PERK ICONS ───────────────── */
+.auth-perk-icon {
+  width: 32px; height: 32px;
+  min-width: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-glow);
+  border-radius: var(--radius);
+  color: var(--accent);
+}
+.auth-perk-icon svg {
+  width: 16px; height: 16px;
+  display: block;
+}
+
+/* ── MOBILE FULL RESPONSIVENESS ─────────────── */
+@media (max-width: 600px) {
+  .main-content { padding: 12px !important; padding-left: 12px !important; }
+  .stat-cards, .grid-4 { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  .quick-actions { gap: 6px !important; }
+  .quick-action { padding: 12px 6px !important; }
+  .quick-action-label { font-size: 0.62rem !important; }
+  .assets-grid { grid-template-columns: 1fr !important; }
+  .page-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+  .portfolio-chart-wrap { padding: 14px !important; }
+  .navbar { padding: 10px 12px !important; }
+  .logo-text { font-size: 0.9rem !important; }
+  table { font-size: 0.78rem !important; }
+  .btn-sm { padding: 5px 10px !important; font-size: 0.75rem !important; }
+}
+
+/* ── ADMIN SIDEBAR TOGGLE ────────────────────── */
+.admin-sidebar {
+  position: fixed;
+  left: -240px;
+  top: 0; bottom: 0;
+  z-index: 200;
+  transition: left 0.25s ease;
+  overflow-y: auto;
+  width: 240px;
+}
+.admin-sidebar.sidebar-open { left: 0; }
+.admin-content {
+  margin-left: 0 !important;
+  transition: margin-left 0.25s ease;
+}
+@media (min-width: 901px) {
+  .admin-sidebar.sidebar-open ~ .admin-content,
+  .admin-content { margin-left: 0; padding-left: 256px !important; }
+}

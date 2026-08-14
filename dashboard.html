@@ -69,7 +69,7 @@
 </head>
 <body>
 
-<nav class="navbar">
+<nav class="navbar" id="main-navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">
       <div class="logo-mark">AC</div>
@@ -81,12 +81,20 @@
       <a href="p2p.html">P2P</a>
       <a href="dashboard.html" class="active">Dashboard</a>
     </div>
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle" aria-label="Toggle menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="3" y1="6" x2="17" y2="6" id="tog-l1"/>
+        <line x1="3" y1="10" x2="17" y2="10" id="tog-l2"/>
+        <line x1="3" y1="14" x2="17" y2="14" id="tog-l3"/>
+      </svg>
+    </button>
     <div class="nav-actions">
       <button class="btn btn-ghost btn-sm notif-dot"></button>
       <button class="btn btn-secondary btn-sm" onclick="Auth.logout()">Sign Out</button>
     </div>
   </div>
 </nav>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <div class="app-layout">
 
@@ -97,7 +105,7 @@
       <a href="dashboard.html" class="sidebar-link active"><span class="icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg></span> Dashboard</a>
       <a href="trade.html" class="sidebar-link"><span class="icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,14 7,9 11,12 18,5"/><polyline points="14,5 18,5 18,9"/></svg></span> Spot Trade</a>
       <a href="p2p.html" class="sidebar-link"><span class="icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="10" r="3"/><circle cx="15" cy="10" r="3"/><line x1="8" y1="10" x2="12" y2="10"/><polyline points="10,8 12,10 10,12"/></svg></span> P2P</a>
-      <a href="markets.html" class="sidebar-link"><span class="icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="3" height="6"/><rect x="7" y="8" width="3" height="10"/><rect x="12" y="4" width="3" height="14"/><rect x="17" y="9" width="1" height="9"/></svg></span> Markets</a>
+      <a href="markets.html" class="sidebar-link" onclick="event.stopPropagation()"><span class="icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="3" height="6"/><rect x="7" y="8" width="3" height="10"/><rect x="12" y="4" width="3" height="14"/><rect x="17" y="9" width="1" height="9"/></svg></span> Markets</a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Wallet</div>
@@ -152,12 +160,12 @@
       <div class="stat-card">
         <div class="stat-label">Total Portfolio Value</div>
         <div class="stat-value" id="stat-total">$0.00</div>
-        <div class="stat-change text-green">+ +$284.20 (2.26%) today</div>
+        <div class="stat-change text-green"><span id="stat-total-change">Loading...</span></div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Available Balance</div>
         <div class="stat-value" id="total-portfolio-value">$0.00</div>
-        <div class="stat-change text-secondary">USDT · Ready to trade</div>
+        <div class="stat-change text-secondary"><span id="stat-avail-sub">USDT · Ready to trade</span></div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Open Orders</div>
@@ -167,7 +175,7 @@
       <div class="stat-card">
         <div class="stat-label">P2P Trades (Active)</div>
         <div class="stat-value">1</div>
-        <div class="stat-change text-yellow">1 awaiting payment</div>
+        <div class="stat-change text-yellow"><span id="stat-p2p-sub">—</span></div>
       </div>
     </div>
 
@@ -314,32 +322,7 @@
       <div class="table-wrap">
         <table>
           <thead><tr><th>Date</th><th>Pair</th><th>Type</th><th>Side</th><th>Price</th><th>Amount</th><th>Filled</th><th>Total</th><th>Status</th><th></th></tr></thead>
-          <tbody>
-            <tr>
-              <td class="caption">Jul 28 18:42</td>
-              <td style="font-weight:600;font-size:0.85rem;">BTC/USDT</td>
-              <td><span class="badge badge-blue">Limit</span></td>
-              <td class="text-green" style="font-weight:600;">Buy</td>
-              <td class="mono">$65,000.00</td>
-              <td class="mono">0.0200</td>
-              <td><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:0%;"></div></div><span class="caption">0%</span></td>
-              <td class="mono">$1,300.00</td>
-              <td><span class="badge badge-yellow">Open</span></td>
-              <td><button class="btn btn-ghost btn-sm text-red" onclick="showToast('Order cancelled','success')"><svg width='10' height='10' viewBox='0 0 20 20' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round'><line x1='4' y1='4' x2='16' y2='16'/><line x1='16' y1='4' x2='4' y2='16'/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="caption">Jul 28 12:10</td>
-              <td style="font-weight:600;font-size:0.85rem;">ETH/USDT</td>
-              <td><span class="badge badge-blue">Limit</span></td>
-              <td class="text-red" style="font-weight:600;">Sell</td>
-              <td class="mono">$3,800.00</td>
-              <td class="mono">0.0500</td>
-              <td><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:0%;"></div></div><span class="caption">0%</span></td>
-              <td class="mono">$190.00</td>
-              <td><span class="badge badge-yellow">Open</span></td>
-              <td><button class="btn btn-ghost btn-sm text-red" onclick="showToast('Order cancelled','success')"><svg width='10' height='10' viewBox='0 0 20 20' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round'><line x1='4' y1='4' x2='16' y2='16'/><line x1='16' y1='4' x2='4' y2='16'/></svg></button></td>
-            </tr>
-          </tbody>
+          <tbody id="orders-tbody"><tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;font-size:0.85rem;">No open orders</td></tr></tbody>
         </table>
       </div>
     </div>

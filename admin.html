@@ -863,6 +863,25 @@
     if (dashCount) dashCount.textContent = count;
     document.getElementById('pending-dep-count').textContent = count;
   }, 100);
+
+  function toggleAdminSidebar() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const content = document.querySelector('.admin-content');
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.toggle('sidebar-open');
+    if (content) content.style.marginLeft = isOpen ? '240px' : '0';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar && window.innerWidth > 900) sidebar.classList.add('sidebar-open');
+  });
+  window.addEventListener('resize', () => {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (!sidebar) return;
+    if (window.innerWidth > 900) sidebar.classList.add('sidebar-open');
+    else sidebar.classList.remove('sidebar-open');
+  });
+
 </script>
 </body>
 </html>
