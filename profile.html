@@ -81,6 +81,12 @@
     .session-meta { font-size: 0.75rem; color: var(--text-muted); }
     .current-session { color: var(--green); font-size: 0.72rem; font-weight: 600; }
   </style>
+<script>
+  // Require authentication
+  if (!Auth.isLoggedIn()) {
+    window.location.href = 'login.html?next=' + encodeURIComponent(window.location.href);
+  }
+</script>
 </head>
 <body>
 
@@ -517,6 +523,45 @@
       profileCountrySelect.appendChild(option);
     });
   }
+
+  // Load user profile data from backend
+  async function loadProfileData() {
+    try {
+      const res = await API.get('/users/me');
+      const user = res.user;
+      
+      // Populate overview section
+      document.getElementById('profile-email').textContent = user.email;
+      document.querySelector('[placeholder="First Name"]').value = user.first_name || '';
+      document.querySelector('[placeholder="Last Name"]').value = user.last_name || '';
+      document.querySelector('[placeholder="you@email.com"]').value = user.email;
+      document.querySelector('[placeholder="Phone number"]').value = user.phone || '';
+      
+      const countrySelect = document.getElementById('profile-country');
+      if (countrySelect && user.country) {
+        countrySelect.value = user.country;
+      }
+      
+      const langSelect = countrySelect?.parentElement?.querySelector('[style*="flex"]')?.querySelector('select:nth-of-type(2)');
+      if (langSelect && user.language) {
+        langSelect.value = user.language;
+      }
+      
+      document.querySelector('[placeholder="Set a code shown in all emails"]').value = user.anti_phish_code || '';
+      
+      // Update sidebar card
+      document.getElementById('profile-email').textContent = user.email;
+    } catch (err) {
+      if (err.error === 'Authentication required' || err.status === 401) {
+        Auth.logout();
+      } else {
+        console.error('Failed to load profile:', err);
+      }
+    }
+  }
+  
+  // Load on page ready
+  loadProfileData();
 </script>
   <!-- Mobile bottom navigation -->
   <nav class="mobile-nav">

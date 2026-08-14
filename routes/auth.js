@@ -31,7 +31,7 @@ const SALT_ROUNDS  = 12;
 const JWT_EXPIRES  = process.env.JWT_EXPIRES_IN  || '7d';
 const JWT_SECRET   = process.env.JWT_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
-const APP_NAME     = process.env.APP_NAME || '[YOUR EXCHANGE NAME]';
+const APP_NAME     = process.env.APP_NAME || 'Arbicap';
 
 // ── HELPERS ───────────────────────────────────
 function generateToken(user, expiresIn = JWT_EXPIRES) {

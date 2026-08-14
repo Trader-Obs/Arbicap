@@ -382,14 +382,17 @@
       // Reset any stale demo data and persisted state before creating the new account session.
       Auth.clearAccountState();
 
-      // Save token if returned immediately
-      if (data.token) {
+      // Save token if returned immediately (for instant login on registration)
+      if (data.token && data.user) {
         localStorage.setItem('broker_token', data.token);
         localStorage.setItem('broker_user', JSON.stringify(data.user));
+        showToast('Account created! Welcome to Arbicap.', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1500);
+      } else {
+        // No instant token, redirect to login
+        showToast('Account created! Check your email to verify and log in.', 'success');
+        setTimeout(() => window.location.href = 'login.html', 2000);
       }
-
-      showToast('Account created! Check your email to verify.', 'success');
-      setTimeout(() => window.location.href = 'login.html', 2000);
     } catch (err) {
       showToast(err.message, 'error');
       btn.textContent = 'Create Account'; btn.disabled = false;

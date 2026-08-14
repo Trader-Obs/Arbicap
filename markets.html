@@ -88,7 +88,8 @@
       <a href="#">Earn</a>
       <a href="#">Support</a>
     </div>
-    <div class="nav-actions">
+    <div class="nav-actions" id="nav-actions">
+      <!-- Will be populated by auth check -->
       <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
       <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
     </div>
@@ -313,6 +314,22 @@
   }
 
   renderMarkets(MARKETS);
+
+  // Update navbar based on auth status
+  function updateNavbar() {
+    const navActions = document.getElementById('nav-actions');
+    if (Auth.isLoggedIn()) {
+      navActions.innerHTML = `
+        <div class="flex gap-8 items-center">
+          <span class="caption" style="opacity:0.8;">Welcome, ${Auth.user().email?.split('@')[0] || 'User'}</span>
+          <a href="dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+          <a href="profile.html" class="btn btn-ghost btn-sm">Profile</a>
+          <button class="btn btn-ghost btn-sm" onclick="Auth.logout()" style="color:var(--red);">Sign Out</button>
+        </div>
+      `;
+    }
+  }
+  updateNavbar();
 
   // Search filter
   document.getElementById('market-search').addEventListener('input', function() {
