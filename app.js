@@ -13,10 +13,10 @@ const APP = {
 
   // ── YOUR BACKEND ENDPOINTS ──────────────────
   // Replace these when your backend is deployed
-  https://arbicap-backend.railway.app/api
+  apiBase:  'https://arbicap-production.up.railway.app/api',
   wsBase:   'wss://ws.arbicap.vercel.app',
 
-// ── PUBLIC DATA SOURCE (use until your own backend is ready) ──
+  // ── PUBLIC DATA SOURCE (use until your own backend is ready) ──
   // Binance public API — no auth needed for market data
   binanceRest: 'https://api.binance.com/api/v3',
   binanceWS:   'wss://stream.binance.com:9443/ws',
