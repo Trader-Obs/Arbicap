@@ -11,12 +11,19 @@ const APP = {
   domain:     'arbicap.vercel.app',
   supportEmail: 'support@arbicap.vercel.app',
 
-  // ── YOUR BACKEND ENDPOINTS ──────────────────
-  // Replace these when your backend is deployed
-  apiBase:  'https://arbicap-production.up.railway.app/api',
+  // ── BACKEND ENDPOINTS ───────────────────────
+  // Use your Railway app URL here. For local dev, this falls back to localhost:4000.
+  // You can also override it at runtime with window.__APP_CONFIG__.apiBase or localStorage.
+  apiBase: (() => {
+    const override = window.__APP_CONFIG__?.apiBase || localStorage.getItem('broker_api_base');
+    if (override) return override;
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:4000/api';
+    return 'https://arbicap-production.up.railway.app';
+  })(),
   wsBase:   'wss://ws.arbicap.vercel.app',
 
-  // ── PUBLIC DATA SOURCE (use until your own backend is ready) ──
+// ── PUBLIC DATA SOURCE (use until your own backend is ready) ──
   // Binance public API — no auth needed for market data
   binanceRest: 'https://api.binance.com/api/v3',
   binanceWS:   'wss://stream.binance.com:9443/ws',
@@ -47,10 +54,26 @@ const Auth = {
     localStorage.setItem('broker_token', token);
     localStorage.setItem('broker_user', JSON.stringify(user));
   },
+  clearAccountState: () => {
+    const keys = [
+      'broker_token',
+      'broker_user',
+      'broker_2fa_verified',
+      'watchlist',
+      'portfolio_state',
+      'wallet_state',
+      'wallet_history',
+      'open_orders',
+      'recent_activity',
+      'p2p_orders',
+      'orders_state',
+      'transactions'
+    ];
+    keys.forEach(key => localStorage.removeItem(key));
+    localStorage.setItem('watchlist', JSON.stringify([]));
+  },
   logout: () => {
-    localStorage.removeItem('broker_token');
-    localStorage.removeItem('broker_user');
-    localStorage.removeItem('broker_2fa_verified');
+    Auth.clearAccountState();
     window.location.href = 'login.html';
   },
   kycLevel: () => {

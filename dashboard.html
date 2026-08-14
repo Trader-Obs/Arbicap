@@ -173,7 +173,7 @@
       <div class="stat-card">
         <div class="stat-label">Total Portfolio Value</div>
         <div class="stat-value" id="stat-total">$0.00</div>
-        <div class="stat-change text-green"><span id="stat-total-change">Loading...</span></div>
+        <div class="stat-change text-green"><span id="stat-total-change">No activity yet</span></div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Available Balance</div>
@@ -183,15 +183,12 @@
       <div class="stat-card">
         <div class="stat-label">Open Orders</div>
         <div class="stat-value" id="stat-orders">0</div>
-        <div class="stat-change text-accent" style="cursor:pointer;" onclick="showToast('Navigating to open orders','info')">View orders →</div>
+        <div class="stat-change text-accent" style="cursor:pointer;" onclick="showToast('No open orders yet','info')">No orders →</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">P2P Trades (Active)</div>
-        <div class="stat-value">1</div>
-        <div class="stat-change text-yellow"><span id="stat-p2p-sub">—</span></div>
-      </div>
-    </div>
-
+        <div class="stat-value">0</div>
+        <div class="stat-change text-yellow"><span id="stat-p2p-sub">No trades yet</span></div>
     <!-- Quick Actions -->
     <div class="quick-actions">
       <a href="wallet.html#deposit" class="quick-action"><span class="quick-action-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="3" x2="10" y2="13"/><polyline points="6,9 10,13 14,9"/><rect x="3" y="15" width="14" height="2" rx="1"/></svg></span><span class="quick-action-label">Deposit</span></a>
@@ -206,7 +203,7 @@
         <div>
           <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:4px;">Total Portfolio Value</div>
           <div class="portfolio-value" id="portfolio-value">$0.00</div>
-          <div class="portfolio-change text-secondary" id="portfolio-change">Loading...</div>
+          <div class="portfolio-change text-secondary" id="portfolio-change">No activity yet</div>
         </div>
         <div class="chart-range-btns">
           <button class="range-btn">1D</button>
@@ -216,7 +213,7 @@
           <button class="range-btn">All</button>
         </div>
       </div>
-      <div class="chart-mini">
+      <div class="chart-mini" aria-label="Portfolio chart placeholder">
         <canvas id="portfolio-canvas"></canvas>
       </div>
     </div>
@@ -233,32 +230,7 @@
           <thead><tr><th>Asset</th><th>Balance</th><th>Value</th><th>24h</th><th></th></tr></thead>
           <tbody>
             <tr>
-              <td><div class="flex gap-8 items-center"><div class="coin-icon coin-btc" style="width:24px;height:24px;font-size:0.65rem;">₿</div><span style="font-size:0.85rem;font-weight:600;">BTC</span></div></td>
-              <td class="mono" style="font-size:0.82rem;">0.1242</td>
-              <td class="mono" style="font-size:0.82rem;">$8,374.10</td>
-              <td class="text-green" style="font-size:0.8rem;">+2.34%</td>
-              <td><div class="assets-row-actions"><a href="trade.html?pair=BTC-USDT" class="btn btn-primary btn-sm" style="font-size:0.72rem;padding:4px 8px;">Trade</a></div></td>
-            </tr>
-            <tr>
-              <td><div class="flex gap-8 items-center"><div class="coin-icon coin-eth" style="width:24px;height:24px;font-size:0.65rem;">Ξ</div><span style="font-size:0.85rem;font-weight:600;">ETH</span></div></td>
-              <td class="mono" style="font-size:0.82rem;">0.0820</td>
-              <td class="mono" style="font-size:0.82rem;">$288.79</td>
-              <td class="text-red" style="font-size:0.8rem;">-0.87%</td>
-              <td><div class="assets-row-actions"><a href="trade.html?pair=ETH-USDT" class="btn btn-primary btn-sm" style="font-size:0.72rem;padding:4px 8px;">Trade</a></div></td>
-            </tr>
-            <tr>
-              <td><div class="flex gap-8 items-center"><div class="coin-icon coin-usdt" style="width:24px;height:24px;font-size:0.55rem;">₮</div><span style="font-size:0.85rem;font-weight:600;">USDT</span></div></td>
-              <td class="mono" style="font-size:0.82rem;">4,210.00</td>
-              <td class="mono" style="font-size:0.82rem;">$4,210.00</td>
-              <td class="text-secondary" style="font-size:0.8rem;">+0.01%</td>
-              <td><div class="assets-row-actions"><a href="trade.html" class="btn btn-primary btn-sm" style="font-size:0.72rem;padding:4px 8px;">Trade</a></div></td>
-            </tr>
-            <tr>
-              <td><div class="flex gap-8 items-center"><div class="coin-icon coin-sol" style="width:24px;height:24px;font-size:0.65rem;">S</div><span style="font-size:0.85rem;font-weight:600;">SOL</span></div></td>
-              <td class="mono" style="font-size:0.82rem;">5.2000</td>
-              <td class="mono" style="font-size:0.82rem;">$949.52</td>
-              <td class="text-green" style="font-size:0.8rem;">+4.55%</td>
-              <td><div class="assets-row-actions"><a href="trade.html?pair=SOL-USDT" class="btn btn-primary btn-sm" style="font-size:0.72rem;padding:4px 8px;">Trade</a></div></td>
+              <td colspan="5" style="text-align:center;color:var(--text-muted);padding:28px 16px;font-size:0.85rem;">No holdings yet</td>
             </tr>
           </tbody>
         </table>
@@ -272,74 +244,22 @@
         </div>
         <div id="activity-list">
           <div style="text-align:center;color:var(--text-muted);padding:32px;font-size:0.85rem;">
-            Loading activity...
+            No recent activity yet
           </div>
         </div>
       </div>
-      </div>
-      </div>
-        <div class="activity-item">
-          <div class="activity-icon trade"></div>
-          <div class="activity-info">
-            <div class="activity-title">Buy BTC/USDT</div>
-            <div class="activity-meta">Limit · 0.0042 BTC @ $66,800 · July 27</div>
-          </div>
-          <div class="activity-amount">
-            <div class="value text-accent">0.0042 BTC</div>
-            <div class="sub"><span class="badge badge-green">Filled</span></div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon p2p"></div>
-          <div class="activity-info">
-            <div class="activity-title">P2P — Sold USDT</div>
-            <div class="activity-meta">To CryptoKing_NG · Bank Transfer · July 26</div>
-          </div>
-          <div class="activity-amount">
-            <div class="value text-red">-$200.00</div>
-            <div class="sub"><span class="badge badge-green">Completed</span></div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon withdraw"></div>
-          <div class="activity-info">
-            <div class="activity-title">ETH Withdrawal</div>
-            <div class="activity-meta">To 0x1a2b...3c4d · July 25 · 09:18</div>
-          </div>
-          <div class="activity-amount">
-            <div class="value text-red">-0.05 ETH</div>
-            <div class="sub"><span class="badge badge-green">Confirmed</span></div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon deposit"></div>
-          <div class="activity-info">
-            <div class="activity-title">BTC Deposit</div>
-            <div class="activity-meta">On-chain · 3 confirmations · July 24</div>
-          </div>
-          <div class="activity-amount">
-            <div class="value text-green">+0.0120 BTC</div>
-            <div class="sub"><span class="badge badge-green">Confirmed</span></div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <!-- Open Orders -->
     <div class="card mb-24">
       <div class="card-header">
         <span class="card-title">Open Orders</span>
-        <button class="btn btn-ghost btn-sm text-red" onclick="showToast('Cancel all orders?','warning')">Cancel All</button>
+        <button class="btn btn-ghost btn-sm text-red" onclick="showToast('No open orders yet','warning')">Cancel All</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Date</th><th>Pair</th><th>Type</th><th>Side</th><th>Price</th><th>Amount</th><th>Filled</th><th>Total</th><th>Status</th><th></th></tr></thead>
-          <tbody id="orders-tbody"><tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;font-size:0.85rem;">No open orders</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
+          <tbody id="orders-tbody"><tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:24px;font-size:0.85rem;">No open orders</td></tr></tbody>
     <!-- Referral card -->
     <div class="referral-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">

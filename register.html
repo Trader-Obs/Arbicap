@@ -366,6 +366,9 @@
 
       if (!res.ok) throw new Error(data.error || 'Registration failed');
 
+      // Reset any stale demo data and persisted state before creating the new account session.
+      Auth.clearAccountState();
+
       // Save token if returned immediately
       if (data.token) {
         localStorage.setItem('broker_token', data.token);
