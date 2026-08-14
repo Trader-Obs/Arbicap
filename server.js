@@ -30,6 +30,7 @@ const webhooksRouter= require('./routes/webhooks');
 const { marketsRouter, tradesRouter, usersRouter, adminRouter, kycRouter } = require('./routes/markets');
 
 const app    = express();
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 // ── MIDDLEWARE ────────────────────────────────
