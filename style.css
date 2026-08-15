@@ -506,7 +506,16 @@ tbody tr:hover td { background: var(--bg-hover); }
   .cta-banner {
     padding: 42px 24px;
   }
-  .sidebar { display: none; }
+  .sidebar {
+    display: block;
+    left: -240px;
+    top: 60px;
+    width: 220px;
+    position: fixed;
+  }
+  .sidebar.sidebar-open {
+    left: 0;
+  }
   .main-content { margin-left: 0; padding: 16px; }
   .app-layout { padding-top: 60px; }
 }

@@ -384,8 +384,7 @@
 
       // Save token if returned immediately (for instant login on registration)
       if (data.token && data.user) {
-        localStorage.setItem('broker_token', data.token);
-        localStorage.setItem('broker_user', JSON.stringify(data.user));
+        Auth.login(data.token, data.user);
         showToast('Account created! Welcome to Arbicap.', 'success');
         setTimeout(() => window.location.href = 'dashboard.html', 1500);
       } else {

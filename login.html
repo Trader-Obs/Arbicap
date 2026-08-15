@@ -214,8 +214,7 @@
         window._tempUserId = data.userId;
       } else {
         // Direct login — save token and redirect
-        localStorage.setItem('broker_token', data.token);
-        localStorage.setItem('broker_user', JSON.stringify(data.user));
+        Auth.login(data.token, data.user);
         showToast('Welcome back!', 'success');
         setTimeout(() => window.location.href = 'dashboard.html', 800);
       }

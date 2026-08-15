@@ -415,20 +415,19 @@
   }
 
   // ── COMPANY WALLET ADDRESSES ─────────────────
-  // Fill these in to match your real wallet addresses.
-  // Also set them in backend/services/custody.js and backend/.env
+  // Real deposit addresses for each wallet network.
   const COMPANY_WALLETS = {
-    BTC:  { bitcoin:   'Awaiting BTC wallet configuration' },
-    ETH:  { ethereum:  'Awaiting ETH wallet configuration' },
-    USDT: { ethereum:  'Awaiting USDT wallet configuration', tron: 'Awaiting TRX wallet configuration', bsc: 'Awaiting BNB wallet configuration' },
-    BNB:  { bsc:       'Awaiting BNB wallet configuration' },
-    SOL:  { solana:    'Awaiting SOL wallet configuration' },
-    XRP:  { xrp:       'Awaiting XRP wallet configuration' },
-    LTC:  { litecoin:  'Awaiting LTC wallet configuration' },
-    ADA:  { cardano:   'Awaiting ADA wallet configuration' },
-    DOGE: { dogecoin:  'Awaiting DOGE wallet configuration' },
+    BTC:  { bitcoin:   'bc1q2wq47jdrsjh2unsx0297qewvqpjwr29ruqrev0' },
+    ETH:  { ethereum:  '0xc8E8CEc49e463D9eb650EC4f6109118DA5e49fA7' },
+    USDT: { ethereum:  '0xc8E8CEc49e463D9eb650EC4f6109118DA5e49fA7', tron: 'TBkKwSah9aV5JkUM8ErU817RzX1M7CpRgq', bsc: '0xc8E8CEc49e463D9eb650EC4f6109118DA5e49fA7' },
+    BNB:  { bsc:       '0xc8E8CEc49e463D9eb650EC4f6109118DA5e49fA7' },
+    SOL:  { solana:    '5P6ZG82A6f24NnPnB9UQFa6T1YgGNFgdV1nrf85KGE5' },
+    XRP:  { xrp:       'rK1zAEL5UZAAA5b1n1pUhf5zA27J2R5sfT' },
+    LTC:  { litecoin:  'LZid81v3B9G2KmzZQABGuwrBegSnCCjvgv' },
+    ADA:  { cardano:   'addr1qy2l4csyqrfykq0w7v0n227fu2c5z0kg23eqjfztd5w6hqq4lt3qgqxjfvq7auclx54unc43gylvs4rjpyjykmga4wqqnsutz5' },
+    DOGE: { dogecoin:  'DLZkxnacqCDFXoWFdwB4eYksntxXXF3moQ' },
   };
-  const COMPANY_MEMOS = { XRP_xrp: 'Set XRP destination tag in environment' };
+  const COMPANY_MEMOS = { XRP_xrp: 'NOT REQUIRED' };
   const MIN_DEPOSITS  = { BTC:0.0001, ETH:0.001, USDT:5, BNB:0.01, SOL:0.01, XRP:1, LTC:0.01, ADA:1, DOGE:1 };
   const CONFIRMATIONS = { BTC:2, ETH:12, USDT:12, BNB:12, SOL:1, XRP:1, LTC:6, ADA:15, DOGE:6 };
 

@@ -43,16 +43,44 @@ const APP = {
 // ── AUTH ──────────────────────────────────────
 // Stores session token in localStorage.
 // Replace with your backend JWT auth flow.
+function normalizeUser(user = {}) {
+  const safeUser = user && typeof user === 'object' ? user : {};
+  const firstName = safeUser.firstName || safeUser.first_name || '';
+  const lastName = safeUser.lastName || safeUser.last_name || '';
+  const email = safeUser.email || '';
+
+  return {
+    ...safeUser,
+    firstName,
+    lastName,
+    first_name: safeUser.first_name || firstName,
+    last_name: safeUser.last_name || lastName,
+    email,
+    phone: safeUser.phone || '',
+    country: safeUser.country || '',
+    language: safeUser.language || 'English',
+    kycLevel: safeUser.kycLevel ?? safeUser.kyc_level ?? 0,
+    twoFaEnabled: safeUser.twoFaEnabled ?? safeUser.two_fa_enabled ?? false,
+  };
+}
+
 const Auth = {
   isLoggedIn: () => !!localStorage.getItem('broker_token'),
   token:      () => localStorage.getItem('broker_token'),
   user:       () => {
-    try { return JSON.parse(localStorage.getItem('broker_user') || '{}'); }
-    catch { return {}; }
+    try {
+      const raw = localStorage.getItem('broker_user');
+      return normalizeUser(raw ? JSON.parse(raw) : {});
+    } catch {
+      return {};
+    }
   },
   login: (token, user) => {
+    const normalized = normalizeUser(user);
     localStorage.setItem('broker_token', token);
-    localStorage.setItem('broker_user', JSON.stringify(user));
+    localStorage.setItem('broker_user', JSON.stringify(normalized));
+    sessionStorage.setItem('broker_token', token);
+    sessionStorage.setItem('broker_user', JSON.stringify(normalized));
   },
   clearAccountState: () => {
     const keys = [
@@ -472,15 +500,16 @@ function toggleSidebar() {
   const overlay = document.getElementById('sidebar-overlay');
   if (!sidebar) return;
 
+  if (window.innerWidth > 900) {
+    sidebar.classList.add('sidebar-open');
+    if (overlay) overlay.classList.remove('visible');
+    return;
+  }
+
   const isOpen = sidebar.classList.toggle('sidebar-open');
   if (overlay) {
     overlay.classList.toggle('visible', isOpen);
     overlay.style.display = isOpen ? 'block' : 'none';
-  }
-
-  if (window.innerWidth > 900) {
-    sidebar.classList.add('sidebar-open');
-    if (overlay) overlay.classList.remove('visible');
   }
 }
 

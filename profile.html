@@ -528,29 +528,42 @@
   async function loadProfileData() {
     try {
       const res = await API.get('/users/me');
-      const user = res.user;
+      const user = res.user || {};
+      const firstName = user.firstName || user.first_name || '';
+      const lastName = user.lastName || user.last_name || '';
+      const email = user.email || '';
+      const phone = user.phone || '';
+      const country = user.country || '';
+      const language = user.language || 'English';
+      const antiPhishCode = user.anti_phish_code || '';
       
       // Populate overview section
-      document.getElementById('profile-email').textContent = user.email;
-      document.querySelector('[placeholder="First Name"]').value = user.first_name || '';
-      document.querySelector('[placeholder="Last Name"]').value = user.last_name || '';
-      document.querySelector('[placeholder="you@email.com"]').value = user.email;
-      document.querySelector('[placeholder="Phone number"]').value = user.phone || '';
+      document.getElementById('profile-email').textContent = email;
+      const firstNameInput = document.querySelector('[placeholder="First Name"]');
+      const lastNameInput = document.querySelector('[placeholder="Last Name"]');
+      const emailInput = document.querySelector('[placeholder="you@email.com"]');
+      const phoneInput = document.querySelector('[placeholder="Phone number"]');
+      const antiPhishInput = document.querySelector('[placeholder="Set a code shown in all emails"]');
+      
+      if (firstNameInput) firstNameInput.value = firstName;
+      if (lastNameInput) lastNameInput.value = lastName;
+      if (emailInput) emailInput.value = email;
+      if (phoneInput) phoneInput.value = phone;
+      if (antiPhishInput) antiPhishInput.value = antiPhishCode;
       
       const countrySelect = document.getElementById('profile-country');
-      if (countrySelect && user.country) {
-        countrySelect.value = user.country;
+      if (countrySelect && country) {
+        countrySelect.value = country;
       }
       
-      const langSelect = countrySelect?.parentElement?.querySelector('[style*="flex"]')?.querySelector('select:nth-of-type(2)');
-      if (langSelect && user.language) {
-        langSelect.value = user.language;
+      const langSelect = document.querySelectorAll('select')[document.querySelectorAll('select').length - 1];
+      if (langSelect && language) {
+        langSelect.value = language;
       }
-      
-      document.querySelector('[placeholder="Set a code shown in all emails"]').value = user.anti_phish_code || '';
       
       // Update sidebar card
-      document.getElementById('profile-email').textContent = user.email;
+      const profileEmailEls = document.querySelectorAll('#profile-email');
+      profileEmailEls.forEach(el => { el.textContent = email; });
     } catch (err) {
       if (err.error === 'Authentication required' || err.status === 401) {
         Auth.logout();
