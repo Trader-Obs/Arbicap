@@ -119,6 +119,29 @@ usersRouter.get('/me', async (req, res, next) => {
     `, [req.user.id]);
     if (!result.rows.length) return res.status(404).json({ error: 'User not found.' });
     res.json({ user: result.rows[0] });
+    const user = result.rows[0];
+    res.json({ 
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        phone: user.phone,
+        country: user.country,
+        kycLevel: user.kyc_level,
+        kycStatus: user.kyc_status,
+        accountType: user.account_type,
+        status: user.status,
+        emailVerified: user.email_verified,
+        twoFaEnabled: user.two_fa_enabled,
+        antiPhishCode: user.anti_phish_code,
+        referralCode: user.referral_code,
+        language: user.language,
+        vipLevel: user.vip_level,
+        lastLoginAt: user.last_login_at,
+        createdAt: user.created_at,
+      }
+});
   } catch (err) { next(err); }
 });
 
@@ -208,7 +231,7 @@ usersRouter.delete('/me/api-keys/:id', async (req, res, next) => {
 usersRouter.get('/me/referrals', async (req, res, next) => {
   try {
     const refs = await query(`
-      SELECT u.first_name, u.created_at as joined_at, u.kyc_level,
+      SELECT u.first_name as firstName, u.created_at as joined_at, u.kyc_level,
              COALESCE(SUM(re.commission_amt), 0) as earned
       FROM users u
       LEFT JOIN referral_earnings re ON re.referee_id = u.id AND re.referrer_id = $1
