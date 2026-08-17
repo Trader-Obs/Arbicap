@@ -126,11 +126,11 @@
         <!-- User card -->
         <div class="card mb-16" style="padding:16px;">
           <div style="display:flex;gap:12px;align-items:center;">
-            <div class="avatar-circle" style="width:48px;height:48px;font-size:1rem;">U</div>
+            <div class="avatar-circle" id="sidebar-avatar" style="width:48px;height:48px;font-size:1rem;">U</div>
             <div>
-              <div style="font-weight:700;font-size:0.9rem;">User Profile</div>
+              <div style="font-weight:700;font-size:0.9rem;" id="sidebar-fullname">User Profile</div>
               <div class="caption"><span id="profile-email">Loading...</span></div>
-              <div class="badge badge-yellow mt-4" style="font-size:0.68rem;">KYC Pending</div>
+              <div class="badge badge-yellow mt-4" id="sidebar-kyc-badge" style="font-size:0.68rem;">KYC Pending</div>
             </div>
           </div>
         </div>
@@ -157,9 +157,9 @@
           <div class="page-header"><div class="page-title">Account Overview</div></div>
           <div class="card mb-20">
             <div class="avatar-section">
-              <div class="avatar-circle">U</div>
+              <div class="avatar-circle" id="main-avatar">U</div>
               <div class="avatar-info">
-                <h2>Account Holder</h2>
+                <h2 id="main-fullname">Account Holder</h2>
                 <div class="caption"><span id="profile-email">Loading...</span></div>
                 <div style="display:flex;gap:8px;margin-top:8px;">
                   <span class="badge badge-yellow">KYC: Pending</span>
@@ -529,41 +529,80 @@
     try {
       const res = await API.get('/users/me');
       const user = res.user || {};
-      const firstName = user.firstName || user.first_name || '';
-      const lastName = user.lastName || user.last_name || '';
-      const email = user.email || '';
-      const phone = user.phone || '';
-      const country = user.country || '';
-      const language = user.language || 'English';
-      const antiPhishCode = user.anti_phish_code || '';
-      
-      // Populate overview section
-      document.getElementById('profile-email').textContent = email;
-      const firstNameInput = document.querySelector('[placeholder="First Name"]');
-      const lastNameInput = document.querySelector('[placeholder="Last Name"]');
-      const emailInput = document.querySelector('[placeholder="you@email.com"]');
-      const phoneInput = document.querySelector('[placeholder="Phone number"]');
-      const antiPhishInput = document.querySelector('[placeholder="Set a code shown in all emails"]');
-      
-      if (firstNameInput) firstNameInput.value = firstName;
-      if (lastNameInput) lastNameInput.value = lastName;
-      if (emailInput) emailInput.value = email;
-      if (phoneInput) phoneInput.value = phone;
-      if (antiPhishInput) antiPhishInput.value = antiPhishCode;
-      
+      const firstName    = user.firstName || user.first_name || '';
+      const lastName     = user.lastName  || user.last_name  || '';
+      const fullName     = `${firstName} ${lastName}`.trim() || user.email?.split('@')[0] || 'User';
+      const email        = user.email          || '';
+      const phone        = user.phone          || '';
+      const country      = user.country        || '';
+      const language     = user.language       || 'English';
+      const antiPhishCode= user.anti_phish_code|| '';
+      const kycStatus    = user.kyc_status     || 'pending';
+      const initial      = (firstName?.[0] || email?.[0] || 'U').toUpperCase();
+
+      // ── Sidebar ───────────────────────────────
+      const sidebarName = document.getElementById('sidebar-fullname');
+      if (sidebarName) sidebarName.textContent = fullName;
+
+      const sidebarAvatar = document.getElementById('sidebar-avatar');
+      if (sidebarAvatar) sidebarAvatar.textContent = initial;
+
+      const sidebarKyc = document.getElementById('sidebar-kyc-badge');
+      if (sidebarKyc) {
+        const label = kycStatus.charAt(0).toUpperCase() + kycStatus.slice(1);
+        sidebarKyc.textContent = `KYC ${label}`;
+        sidebarKyc.className = `badge mt-4` + (kycStatus === 'approved' ? ' badge-green' : ' badge-yellow');
+        sidebarKyc.style.fontSize = '0.68rem';
+      }
+
+      // ── Main header ───────────────────────────
+      const mainName = document.getElementById('main-fullname');
+      if (mainName) mainName.textContent = fullName;
+
+      const mainAvatar = document.getElementById('main-avatar');
+      if (mainAvatar) mainAvatar.textContent = initial;
+
+      // ── Email spans ───────────────────────────
+      document.querySelectorAll('#profile-email').forEach(el => {
+        el.textContent = email;
+      });
+
+      // ── Form fields ───────────────────────────
+      const firstNameInput  = document.querySelector('[placeholder="First Name"]');
+      const lastNameInput   = document.querySelector('[placeholder="Last Name"]');
+      const emailInput      = document.querySelector('[placeholder="you@email.com"]');
+      const phoneInput      = document.querySelector('[placeholder="Phone number"]');
+      const antiPhishInput  = document.querySelector('[placeholder="Set a code shown in all emails"]');
+
+      if (firstNameInput) firstNameInput.value  = firstName;
+      if (lastNameInput)  lastNameInput.value   = lastName;
+      if (emailInput)     emailInput.value      = email;
+      if (phoneInput)     phoneInput.value      = phone;
+      if (antiPhishInput) antiPhishInput.value  = antiPhishCode;
+
+      // ── Country select ────────────────────────
       const countrySelect = document.getElementById('profile-country');
-      if (countrySelect && country) {
-        countrySelect.value = country;
+      if (countrySelect && country) countrySelect.value = country;
+
+      // ── Language select ───────────────────────
+      const selects = document.querySelectorAll('select');
+      const langSelect = selects[selects.length - 1];
+      if (langSelect && language) langSelect.value = language;
+
+      // ── Referral code ─────────────────────────
+      if (user.referral_code) {
+        document.querySelectorAll('input[readonly]').forEach(el => {
+          if (el.value.includes('REF') || el.value.includes('YOUR-REF')) {
+            el.value = user.referral_code;
+          }
+        });
+        document.querySelectorAll('.addr-text').forEach(el => {
+          if (el.textContent.includes('REF-CODE') || el.textContent.includes('YOUR-REF')) {
+            el.textContent = `https://arbicap.vercel.app/register?ref=${user.referral_code}`;
+          }
+        });
       }
-      
-      const langSelect = document.querySelectorAll('select')[document.querySelectorAll('select').length - 1];
-      if (langSelect && language) {
-        langSelect.value = language;
-      }
-      
-      // Update sidebar card
-      const profileEmailEls = document.querySelectorAll('#profile-email');
-      profileEmailEls.forEach(el => { el.textContent = email; });
+
     } catch (err) {
       if (err.error === 'Authentication required' || err.status === 401) {
         Auth.logout();
@@ -572,7 +611,7 @@
       }
     }
   }
-  
+
   // Load on page ready
   loadProfileData();
 </script>
