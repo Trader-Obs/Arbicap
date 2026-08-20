@@ -118,9 +118,8 @@ usersRouter.get('/me', async (req, res, next) => {
       FROM users WHERE id=$1
     `, [req.user.id]);
     if (!result.rows.length) return res.status(404).json({ error: 'User not found.' });
-    res.json({ user: result.rows[0] });
     const user = result.rows[0];
-    res.json({ 
+    res.json({
       user: {
         id: user.id,
         email: user.email,
@@ -141,7 +140,7 @@ usersRouter.get('/me', async (req, res, next) => {
         lastLoginAt: user.last_login_at,
         createdAt: user.created_at,
       }
-});
+    });
   } catch (err) { next(err); }
 });
 
