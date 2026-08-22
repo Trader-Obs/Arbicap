@@ -211,6 +211,7 @@ router.post('/login', async (req, res, next) => {
         firstName: user.first_name, lastName: user.last_name,
         kycLevel: user.kyc_level, kycStatus: user.kyc_status,
         twoFaEnabled: user.two_fa_enabled,
+        role: user.role || 'user',
       },
     });
   } catch (err) { next(err); }
@@ -259,6 +260,7 @@ router.post('/2fa/verify', async (req, res, next) => {
         id: user.id, email: user.email,
         firstName: user.first_name, lastName: user.last_name,
         kycLevel: user.kyc_level, kycStatus: user.kyc_status,
+        role: user.role || 'user',
       },
     });
   } catch (err) { next(err); }
