@@ -476,6 +476,12 @@
 <script src="icons.js"></script>
 <script src="app.js"></script>
 <script>
+  // Require an authenticated admin — anyone else gets redirected.
+  if (!Auth.isLoggedIn() || Auth.user().role !== 'admin') {
+    window.location.href = 'login.html?next=' + encodeURIComponent(window.location.href);
+  }
+</script>
+<script>
   document.getElementById('admin-time').textContent = new Date().toLocaleTimeString();
 
   // ── Admin nav ─────────────────────────────────
@@ -708,13 +714,26 @@
   let PENDING_DEPOSITS = [];
 
   function loadPendingDeposits() {
-    // ── BACKEND CALL ─────────────────────────────────
-    // TODO: Uncomment when backend is live
-    // fetch(APP.apiBase + '/admin/pending-deposits', { headers: { 'Authorization': 'Bearer ' + Auth.token() } })
-    //   .then(r => r.json()).then(data => { PENDING_DEPOSITS = data.deposits || []; renderPendingDeposits(PENDING_DEPOSITS); })
-    //   .catch(err => showToast('Failed to load deposits: ' + err.message, 'error'));
-    // ────────────────────────────────────────────────
-    renderPendingDeposits(PENDING_DEPOSITS); // Currently empty; will populate from backend
+    fetch(APP.apiBase + '/admin/pending-deposits', { headers: { 'Authorization': 'Bearer ' + Auth.token() } })
+      .then(r => r.json())
+      .then(data => {
+        // Map DB column names to the shape renderPendingDeposits() expects.
+        PENDING_DEPOSITS = (data.deposits || []).map(d => ({
+          id: d.id,
+          submittedAt: d.created_at,
+          firstName: d.first_name,
+          lastName: d.last_name,
+          email: d.email,
+          kycStatus: d.kyc_status,
+          kycLevel: d.kyc_level,
+          symbol: d.symbol,
+          network: d.network,
+          amount: d.amount,
+          txHash: d.tx_hash,
+        }));
+        renderPendingDeposits(PENDING_DEPOSITS);
+      })
+      .catch(err => showToast('Failed to load deposits: ' + err.message, 'error'));
   }
 
   function filterDeposits() {
@@ -772,55 +791,49 @@
   function approveDeposit(depId, userName, amount, symbol) {
     if (!confirm(`Approve deposit of ${amount} ${symbol} for ${userName}?\n\nThis will credit ${amount} ${symbol} to their account immediately.\n\nMake sure you have verified the transaction on the blockchain explorer first.`)) return;
 
-    // ── BACKEND CALL (uncomment when live) ────────
-    // fetch(`/api/admin/deposits/${depId}/approve`, {
-    //   method: 'POST',
-    //   headers: { 'Authorization': 'Bearer ' + localStorage.getItem('broker_token'), 'Content-Type': 'application/json' },
-    // }).then(r => r.json()).then(data => {
-    //   showToast(` ${amount} ${symbol} credited to ${userName}`, 'success');
-    //   document.getElementById('dep-row-' + depId)?.remove();
-    //   PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
-    //   loadPendingDeposits();
-    // }).catch(err => showToast('Approval failed: ' + err.message, 'error'));
-    // ──────────────────────────────────────────────
-
-    // Mock approval
-    showToast(` ${amount} ${symbol} approved and credited to ${userName}`, 'success');
-    document.getElementById('dep-row-' + depId)?.remove();
-    PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
-    const remaining = PENDING_DEPOSITS.length;
-    document.getElementById('pending-dep-count').textContent = remaining;
-    document.getElementById('nav-dep-badge').textContent     = remaining;
-    const dashCount = document.getElementById('dash-dep-count');
-    if (dashCount) dashCount.textContent = remaining;
-    if (!remaining) {
-      document.getElementById('deposits-tbody').innerHTML =
-        `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px;"> No pending deposit approvals</td></tr>`;
-    }
+    fetch(APP.apiBase + `/admin/deposits/${depId}/approve`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + Auth.token(), 'Content-Type': 'application/json' },
+    }).then(async r => {
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Approval failed.');
+      return data;
+    }).then(() => {
+      showToast(` ${amount} ${symbol} approved and credited to ${userName}`, 'success');
+      document.getElementById('dep-row-' + depId)?.remove();
+      PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
+      const remaining = PENDING_DEPOSITS.length;
+      document.getElementById('pending-dep-count').textContent = remaining;
+      document.getElementById('nav-dep-badge').textContent     = remaining;
+      const dashCount = document.getElementById('dash-dep-count');
+      if (dashCount) dashCount.textContent = remaining;
+      if (!remaining) {
+        document.getElementById('deposits-tbody').innerHTML =
+          `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px;"> No pending deposit approvals</td></tr>`;
+      }
+    }).catch(err => showToast('Approval failed: ' + err.message, 'error'));
   }
 
   function rejectDeposit(depId, userName) {
     const reason = prompt(`Rejection reason for ${userName} (will be sent to user):\nE.g. "Transaction not found on blockchain", "Amount mismatch"`);
     if (reason === null) return; // cancelled
 
-    // ── BACKEND CALL (uncomment when live) ────────
-    // fetch(`/api/admin/deposits/${depId}/reject`, {
-    //   method: 'POST',
-    //   headers: { 'Authorization': 'Bearer ' + localStorage.getItem('broker_token'), 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ reason }),
-    // }).then(r => r.json()).then(() => {
-    //   showToast('Deposit rejected. User notified.', 'success');
-    //   PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
-    //   loadPendingDeposits();
-    // }).catch(err => showToast('Rejection failed: ' + err.message, 'error'));
-    // ──────────────────────────────────────────────
-
-    showToast('Deposit rejected. User has been notified.', 'success');
-    document.getElementById('dep-row-' + depId)?.remove();
-    PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
-    const remaining = PENDING_DEPOSITS.length;
-    document.getElementById('pending-dep-count').textContent = remaining;
-    document.getElementById('nav-dep-badge').textContent     = remaining;
+    fetch(APP.apiBase + `/admin/deposits/${depId}/reject`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + Auth.token(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    }).then(async r => {
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Rejection failed.');
+      return data;
+    }).then(() => {
+      showToast('Deposit rejected. User has been notified.', 'success');
+      document.getElementById('dep-row-' + depId)?.remove();
+      PENDING_DEPOSITS = PENDING_DEPOSITS.filter(d => d.id !== depId);
+      const remaining = PENDING_DEPOSITS.length;
+      document.getElementById('pending-dep-count').textContent = remaining;
+      document.getElementById('nav-dep-badge').textContent     = remaining;
+    }).catch(err => showToast('Rejection failed: ' + err.message, 'error'));
   }
 
   function loadDepositHistory() {
@@ -856,14 +869,8 @@
       : `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">No records found</td></tr>`;
   }
 
-  // Auto-load pending deposits count on page load
-  setTimeout(() => {
-    const count = PENDING_DEPOSITS.length;
-    document.getElementById('nav-dep-badge').textContent = count;
-    const dashCount = document.getElementById('dash-dep-count');
-    if (dashCount) dashCount.textContent = count;
-    document.getElementById('pending-dep-count').textContent = count;
-  }, 100);
+  // Load real pending deposits from the backend on page load.
+  setTimeout(() => { loadPendingDeposits(); }, 100);
 
   function toggleAdminSidebar() {
     const sidebar = document.querySelector('.admin-sidebar');

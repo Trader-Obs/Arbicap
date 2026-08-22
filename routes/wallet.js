@@ -5,7 +5,9 @@
  *   - No KYC required
  *   - No minimum amount
  *   - No daily limit
- *   - Auto-credited immediately on tx hash submission
+ *   - Submitted as pending_review; admin verifies the tx hash on a block
+ *     explorer and approves before the balance is credited (see
+ *     services/depositMonitor.js: approveDeposit/rejectDeposit)
  *
  * Withdrawal rules:
  *   - KYC Level 2 required (anti-bot identity check)
@@ -70,8 +72,9 @@ router.get('/deposit-address', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// ── SUBMIT DEPOSIT (auto-credited, no approval needed) ──
-// No KYC required, no minimum, no daily limit.
+// ── SUBMIT DEPOSIT (goes to pending_review — admin approval required) ──
+// No KYC required, no minimum, no daily limit to submit; balance is only
+// credited once an admin verifies the tx hash and approves it.
 router.post('/deposit/submit', async (req, res, next) => {
   try {
     const { symbol, network, txHash, amount } = req.body;
@@ -86,7 +89,7 @@ router.post('/deposit/submit', async (req, res, next) => {
       amount:  parseFloat(amount),
     });
     res.status(201).json({
-      message: 'Deposit confirmed. Your balance has been updated.',
+      message: 'Deposit submitted. We\'ll credit your balance once it\'s verified — usually within a few hours.',
       ...result,
     });
   } catch (err) {

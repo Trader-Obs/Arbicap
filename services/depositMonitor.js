@@ -62,56 +62,111 @@ async function submitDeposit({ userId, symbol, network, txHash, amount }) {
     throw new Error('This transaction hash has already been submitted. Contact support if you have an issue.');
   }
 
+  // Create a pending_review record. Balance is NOT credited yet — an admin
+  // must verify the tx on a block explorer and approve it (see approveDeposit below).
+  const txResult = await query(`
+    INSERT INTO transactions
+      (user_id, type, symbol, network, amount, fee, status, tx_hash, note)
+    VALUES ($1, 'deposit', $2, $3, $4, 0, 'pending_review', $5,
+            'Awaiting admin verification against block explorer')
+    RETURNING id
+  `, [userId, symbol, network, amt, txHash.trim()]);
+
+  const txId = txResult.rows[0].id;
+
+  await notifyUser(userId, 'deposit',
+    `${amt} ${symbol} deposit received — pending review`,
+    { body: 'We\'ll notify you once it\'s verified and credited to your balance.', link: '/wallet.html' }
+  );
+  await auditLog({ userId, action: 'deposit_submitted', entityType: 'transaction', entityId: txId,
+    newValue: { symbol, amount: amt, txHash: txHash.trim() } });
+  logger.info(`Deposit submitted, awaiting admin review: ${txId} — ${amt} ${symbol} for user ${userId}`);
+  return { txId, amount: amt, symbol, status: 'pending_review' };
+}
+
+// ── APPROVE DEPOSIT (admin action) ────────────
+// Called from adminRouter POST /deposits/:id/approve, only after a human
+// has verified the tx hash on a block explorer. This is where the balance
+// actually gets credited.
+async function approveDeposit({ txId, adminId }) {
   const client = await getClient();
   try {
     await client.query('BEGIN');
 
-    // Create completed transaction record immediately
-    const txResult = await client.query(`
-      INSERT INTO transactions
-        (user_id, type, symbol, network, amount, fee, status, tx_hash, note, completed_at)
-      VALUES ($1, 'deposit', $2, $3, $4, 0, 'completed', $5,
-              'Auto-credited on submission — company wallet deposit', NOW())
-      RETURNING id
-    `, [userId, symbol, network, amt, txHash.trim()]);
+    const txResult = await client.query(
+      "SELECT * FROM transactions WHERE id=$1 AND type='deposit' AND status='pending_review' FOR UPDATE",
+      [txId]
+    );
+    if (!txResult.rows.length) throw new Error('Deposit not found or already processed.');
+    const tx = txResult.rows[0];
 
-    const txId = txResult.rows[0].id;
-
-    // Credit balance immediately
     await client.query(`
       INSERT INTO wallets (user_id, symbol, total_balance, locked_balance)
       VALUES ($1, $2, $3, 0)
       ON CONFLICT (user_id, symbol)
       DO UPDATE SET total_balance = wallets.total_balance + $3, updated_at = NOW()
-    `, [userId, symbol, amt]);
+    `, [tx.user_id, tx.symbol, parseFloat(tx.amount)]);
+
+    await client.query(`
+      UPDATE transactions
+      SET status='completed', completed_at=NOW(), reviewed_by=$1
+      WHERE id=$2
+    `, [adminId, txId]);
 
     await client.query('COMMIT');
 
-    // Notify user
-    const userRes = await query('SELECT email, first_name FROM users WHERE id = $1', [userId]);
+    const userRes = await query('SELECT email, first_name FROM users WHERE id = $1', [tx.user_id]);
     if (userRes.rows.length) {
       const u = userRes.rows[0];
       await sendEmail({
         to: u.email,
-        subject: `Deposit confirmed — ${amt} ${symbol}`,
+        subject: `Deposit approved — ${tx.amount} ${tx.symbol}`,
         template: 'deposit-confirmed',
-        data: { name: u.first_name, amount: amt, symbol, confirmations: 1 },
+        data: { name: u.first_name, amount: tx.amount, symbol: tx.symbol, confirmations: 1 },
       });
     }
 
-    await notifyUser(userId, 'deposit',
-      `${amt} ${symbol} deposit confirmed`,
+    await notifyUser(tx.user_id, 'deposit',
+      `${tx.amount} ${tx.symbol} deposit approved`,
       { body: 'Your balance has been updated.', link: '/dashboard.html' }
     );
-    await auditLog({ userId, action: 'deposit_auto_credited', entityType: 'transaction', entityId: txId });
-    logger.info(`Deposit auto-credited: ${txId} — ${amt} ${symbol} for user ${userId}`);
-    return { txId, amount: amt, symbol, status: 'completed' };
+    await auditLog({ adminId, action: 'deposit_approved', entityType: 'transaction', entityId: txId,
+      newValue: { userId: tx.user_id, symbol: tx.symbol, amount: tx.amount } });
+    logger.info(`Deposit approved by admin ${adminId}: ${txId} — ${tx.amount} ${tx.symbol} for user ${tx.user_id}`);
+
+    return { txId, amount: tx.amount, symbol: tx.symbol, status: 'completed' };
   } catch (err) {
     await client.query('ROLLBACK').catch(() => {});
     throw err;
   } finally {
     client.release();
   }
+}
+
+// ── REJECT DEPOSIT (admin action) ─────────────
+async function rejectDeposit({ txId, adminId, reason }) {
+  const txResult = await query(
+    "SELECT * FROM transactions WHERE id=$1 AND type='deposit' AND status='pending_review'",
+    [txId]
+  );
+  if (!txResult.rows.length) throw new Error('Deposit not found or already processed.');
+  const tx = txResult.rows[0];
+
+  await query(`
+    UPDATE transactions
+    SET status='rejected', reviewed_by=$1, admin_note=$2
+    WHERE id=$3
+  `, [adminId, reason || 'Rejected by admin — could not verify transaction.', txId]);
+
+  await notifyUser(tx.user_id, 'deposit',
+    `Deposit of ${tx.amount} ${tx.symbol} was rejected`,
+    { body: reason || 'Please contact support for details.', link: '/wallet.html' }
+  );
+  await auditLog({ adminId, action: 'deposit_rejected', entityType: 'transaction', entityId: txId,
+    newValue: { reason } });
+  logger.info(`Deposit rejected by admin ${adminId}: ${txId} — ${reason || 'no reason given'}`);
+
+  return { txId, status: 'rejected' };
 }
 
 // ── WITHDRAWAL PROCESSOR ──────────────────────
@@ -165,4 +220,4 @@ async function processWithdrawalQueue() {
   }
 }
 
-module.exports = { startDepositMonitor, submitDeposit };
+module.exports = { startDepositMonitor, submitDeposit, approveDeposit, rejectDeposit };
