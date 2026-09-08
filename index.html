@@ -223,16 +223,25 @@
 <div id="google_translate_element" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999;"></div>
 
 <style>
-  /* 1. Hide the annoying top banner that pushes your website down */
-  .goog-te-banner-frame {
+  /* Forcefully hide Google's translation top frame and reset body push */
+  .goog-te-banner-frame, 
+  .goog-te-banner, 
+  iframe.goog-te-banner-frame {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
   }
+  
   body {
     top: 0px !important;
     position: static !important;
+    min-height: 100vh !important;
   }
 
-  /* 2. Style the floating widget box to match your dark crypto theme */
+  /* Style the floating widget box to match your dark crypto theme */
   #google_translate_element {
     background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(10px);
@@ -246,10 +255,10 @@
     border-color: rgba(59, 130, 246, 0.5);
   }
 
-  /* 3. Style the inner dropdown text and background */
+  /* Style the inner dropdown */
   .goog-te-gadget {
     font-family: inherit !important;
-    font-size: 0px !important; /* Hides the raw "Powered by Google" text label */
+    font-size: 0px !important;
     color: transparent !important;
   }
   .goog-te-gadget select {
@@ -268,11 +277,8 @@
     color: #f8fafc !important;
   }
 
-  /* 4. Hide Google's default branding links & tooltips */
-  .goog-logo-link, .goog-te-gadget span {
-    display: none !important;
-  }
-  .goog-tooltip {
+  /* Hide Google's default branding links & tooltips */
+  .goog-logo-link, .goog-te-gadget span, .goog-tooltip {
     display: none !important;
   }
   .goog-text-highlight {
@@ -282,14 +288,26 @@
 </style>
 
 <script>
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    includedLanguages: 'es,fr,de,ar,zh-CN,pt,ru,ja,ko,tr,hi,it,nl,pl,sv',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: false,
-  }, 'google_translate_element');
-}
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'es,fr,de,ar,zh-CN,pt,ru,ja,ko,tr,hi,it,nl,pl,sv',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: false,
+    }, 'google_translate_element');
+  }
+
+  // Aggressively remove the top banner frame if Google injects it later
+  setInterval(function() {
+    const banner = document.querySelector('.goog-te-banner-frame');
+    if (banner) {
+      banner.style.display = 'none';
+      banner.remove();
+    }
+    if (document.body.style.top && document.body.style.top !== '0px') {
+      document.body.style.top = '0px';
+    }
+  }, 100);
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <body>
