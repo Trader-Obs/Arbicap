@@ -220,7 +220,67 @@
     }
   </style>
 </head>
-<div id="google_translate_element" style="position:fixed;bottom:80px;right:16px;z-index:999;"></div>
+<div id="google_translate_element" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999;"></div>
+
+<style>
+  /* 1. Hide the annoying top banner that pushes your website down */
+  .goog-te-banner-frame {
+    display: none !important;
+  }
+  body {
+    top: 0px !important;
+    position: static !important;
+  }
+
+  /* 2. Style the floating widget box to match your dark crypto theme */
+  #google_translate_element {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+  }
+  #google_translate_element:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  /* 3. Style the inner dropdown text and background */
+  .goog-te-gadget {
+    font-family: inherit !important;
+    font-size: 0px !important; /* Hides the raw "Powered by Google" text label */
+    color: transparent !important;
+  }
+  .goog-te-gadget select {
+    background-color: transparent !important;
+    color: #f8fafc !important;
+    border: none !important;
+    outline: none !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .goog-te-gadget select option {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+  }
+
+  /* 4. Hide Google's default branding links & tooltips */
+  .goog-logo-link, .goog-te-gadget span {
+    display: none !important;
+  }
+  .goog-tooltip {
+    display: none !important;
+  }
+  .goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+</style>
+
 <script>
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
